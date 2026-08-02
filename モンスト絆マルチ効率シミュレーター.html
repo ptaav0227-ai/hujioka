@@ -7,872 +7,1020 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{
---bg: #14122a;
---panel: #1e1b3d;
---panel-2: #262151;
---line: #383163;
---new: #ff7a4d;
---new-dim: #ff7a4d33;
---exist: #45d0c4;
---exist-dim: #45d0c433;
---gold: #ffc857;
---text: #ece9ff;
---text-dim: #a29bd6;
-}
-*{box-sizing:border-box;}
-body{
-margin:0;
-background:
-radial-gradient(circle at 15% -10%, #322a6a 0%, transparent 45%),
-radial-gradient(circle at 110% 10%, #2a2456 0%, transparent 40%),
-var(--bg);
-color:var(--text);
-font-family:"Noto Sans JP", sans-serif;
-padding:24px 16px 80px;
-min-height:100vh;
-}
-.wrap{max-width:640px;margin:0 auto;}
-header{margin-bottom:28px;}
-.eyebrow{
-font-size:12px;letter-spacing:.14em;color:var(--gold);
-font-weight:700;margin-bottom:6px;
-}
-h1{
-font-family:"Zen Maru Gothic",sans-serif;
-font-weight:900;
-font-size:clamp(24px,6vw,32px);
-margin:0 0 8px;
-line-height:1.3;
-}
-.sub{color:var(--text-dim);font-size:13.5px;line-height:1.7;margin:0;}
-.card{
-background:var(--panel);
-border:1px solid var(--line);
-border-radius:18px;
-padding:20px;
-margin-bottom:18px;
-}
-.card-title{
-display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-font-family:"Zen Maru Gothic",sans-serif;
-font-weight:700;font-size:16px;margin:0 0 4px;
-}
-.dot{width:10px;height:10px;border-radius:50%;flex:none;}
-.dot.new{background:var(--new);box-shadow:0 0 10px var(--new);}
-.dot.exist{background:var(--exist);box-shadow:0 0 10px var(--exist);}
-.lock-badge{
-margin-left:auto;font-size:11px;font-weight:500;color:var(--text-dim);
-background:var(--panel-2);border:1px solid var(--line);
-padding:3px 9px;border-radius:999px;
-}
-.lock-badge.unlocked{color:#8be89a;border-color:#8be89a55;}
-.card-note{color:var(--text-dim);font-size:12.5px;margin:0 0 16px;line-height:1.6;}
-.row{
-display:grid;
-gap:8px;
-margin-bottom:8px;
-align-items:center;
-}
-.row.new-row{grid-template-columns:1fr 88px 32px;}
-.row.exist-row{grid-template-columns:1fr 1fr 80px 32px;}
-.row.head{color:var(--text-dim);font-size:11px;padding:0 2px;}
-input{
-background:var(--panel-2);
-border:1px solid var(--line);
-border-radius:10px;
-color:var(--text);
-padding:9px 10px;
-font-size:14px;
-width:100%;
-font-family:inherit;
-}
-input:focus{outline:2px solid var(--gold);outline-offset:1px;}
-input.rank{text-align:right;}
-.remove-btn{
-background:none;border:none;color:var(--text-dim);
-font-size:18px;cursor:pointer;width:32px;height:32px;
-border-radius:8px;line-height:1;
-}
-.remove-btn:hover{background:#ffffff12;color:#ff6b6b;}
-.remove-btn:focus-visible{outline:2px solid var(--gold);}
-.add-btn{
-width:100%;margin-top:6px;
-background:transparent;
-border:1.5px dashed var(--line);
-color:var(--text-dim);
-border-radius:10px;
-padding:10px;
-font-size:13.5px;
-font-weight:500;
-cursor:pointer;
-font-family:inherit;
-}
-.add-btn:hover{border-color:var(--gold);color:var(--gold);}
-.add-btn:focus-visible{outline:2px solid var(--gold);}
-details{margin-top:10px;}
-summary{
-cursor:pointer;color:var(--text-dim);font-size:12.5px;
-padding:6px 0;list-style:none;display:flex;align-items:center;gap:6px;
-}
-summary::-webkit-details-marker{display:none;}
-summary::before{content:"▸";display:inline-block;transition:transform .15s;}
-details[open] summary::before{transform:rotate(90deg);}
-.breakpoint-grid{
-display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px;
-}
-.bp-pair{display:flex;align-items:center;gap:6px;background:var(--panel-2);
-border:1px solid var(--line);border-radius:10px;padding:6px 8px;}
-.bp-pair .bp-value{font-size:13px;font-weight:700;color:var(--text);min-width:24px;text-align:right;}
-.bp-pair span{color:var(--text-dim);font-size:11px;white-space:nowrap;}
-.compute-btn{
-width:100%;
-background:linear-gradient(135deg,var(--gold),#ff9d4d);
-color:#221a05;
-border:none;
-border-radius:14px;
-padding:16px;
-font-family:"Zen Maru Gothic",sans-serif;
-font-weight:700;
-font-size:16px;
-cursor:pointer;
-box-shadow:0 8px 24px -8px #ffc85788;
-margin:8px 0 22px;
-}
-.compute-btn:hover{filter:brightness(1.05);}
-.compute-btn:focus-visible{outline:2px solid #fff;}
-.parallel-buttons{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
-.parallel-btn{
-flex:1;min-width:52px;
-background:var(--panel-2);border:1px solid var(--line);
-color:var(--text-dim);border-radius:10px;
-padding:10px 6px;font-size:14px;font-weight:700;
-font-family:"Zen Maru Gothic",sans-serif;cursor:pointer;
-}
-.parallel-btn.active{
-background:var(--gold);border-color:var(--gold);color:#221a05;
-}
-.parallel-btn:focus-visible{outline:2px solid var(--gold);}
-.error-box{
-background:#3a1c2a;border:1px solid #ff6b6b55;color:#ffb3b3;
-border-radius:12px;padding:14px 16px;font-size:13px;margin-bottom:18px;
-}
-.result-total{
-text-align:center;padding:22px 16px 26px;
-}
-.result-total .label{color:var(--text-dim);font-size:12.5px;letter-spacing:.06em;}
-.result-total .num{
-font-family:"Zen Maru Gothic",sans-serif;
-font-weight:900;
-font-size:clamp(40px,14vw,56px);
-color:var(--gold);
-line-height:1.15;
-text-shadow:0 0 24px #ffc85755;
-}
-.result-total .num span{font-size:.4em;color:var(--text-dim);font-weight:700;margin-left:4px;}
-.room{
-background:var(--panel-2);
-border:1px solid var(--line);
-border-radius:16px;
-padding:16px;
-margin-bottom:12px;
-}
-.room-head{
-display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;
-}
-.room-head .room-name{font-family:"Zen Maru Gothic",sans-serif;font-weight:700;font-size:13.5px;color:var(--text-dim);}
-.room-head .room-cost{font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:20px;color:var(--gold);}
-.room-head .room-cost span{font-size:11px;color:var(--text-dim);font-weight:500;margin-left:2px;}
-.member-card{padding:4px 16px;}
-.member-summary{
-display:flex;justify-content:space-between;align-items:center;
-padding:14px 2px;cursor:pointer;
-}
-.member-summary::before{color:var(--exist);}
-.member-summary .m-name{
-font-family:"Zen Maru Gothic",sans-serif;font-weight:700;font-size:14.5px;color:var(--text);
-}
-.member-summary .m-eff{
-font-family:"Noto Sans JP",sans-serif;font-weight:700;font-size:11.5px;color:var(--gold);
-margin-left:6px;
-}
-.member-summary .m-cost{
-font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:16px;color:var(--gold);
-}
-.member-summary .m-cost span{font-size:10.5px;color:var(--text-dim);font-weight:500;margin-left:2px;}
-.orbs{display:flex;flex-wrap:wrap;gap:8px;}
-.orb{
-display:flex;align-items:center;gap:6px;
-padding:7px 12px 7px 8px;
-border-radius:999px;
-font-size:12.5px;
-font-weight:500;
-}
-.orb .chip{width:8px;height:8px;border-radius:50%;flex:none;}
-.orb.new{background:var(--new-dim);color:#ffd0b8;}
-.orb.new .chip{background:var(--new);}
-.orb.exist{background:var(--exist-dim);color:#c7f5f0;}
-.orb.exist .chip{background:var(--exist);}
-.orb b{font-weight:700;color:var(--text);}
-footer{text-align:center;color:var(--text-dim);font-size:11.5px;margin-top:26px;line-height:1.8;}
+  :root{
+    --bg: #14122a;
+    --panel: #1e1b3d;
+    --panel-2: #262151;
+    --line: #383163;
+    --new: #ff7a4d;
+    --new-dim: #ff7a4d33;
+    --exist: #45d0c4;
+    --exist-dim: #45d0c433;
+    --gold: #ffc857;
+    --text: #ece9ff;
+    --text-dim: #a29bd6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 15% -10%, #322a6a 0%, transparent 45%),
+      radial-gradient(circle at 110% 10%, #2a2456 0%, transparent 40%),
+      var(--bg);
+    color:var(--text);
+    font-family:"Noto Sans JP", sans-serif;
+    padding:24px 16px 80px;
+    min-height:100vh;
+  }
+  .wrap{max-width:640px;margin:0 auto;}
+  header{margin-bottom:28px;}
+  .eyebrow{
+    font-size:12px;letter-spacing:.14em;color:var(--gold);
+    font-weight:700;margin-bottom:6px;
+  }
+  h1{
+    font-family:"Zen Maru Gothic",sans-serif;
+    font-weight:900;
+    font-size:clamp(24px,6vw,32px);
+    margin:0 0 8px;
+    line-height:1.3;
+  }
+  .sub{color:var(--text-dim);font-size:13.5px;line-height:1.7;margin:0;}
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:18px;
+  }
+  .card-title{
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    font-family:"Zen Maru Gothic",sans-serif;
+    font-weight:700;font-size:16px;margin:0 0 4px;
+  }
+  .dot{width:10px;height:10px;border-radius:50%;flex:none;}
+  .dot.new{background:var(--new);box-shadow:0 0 10px var(--new);}
+  .dot.exist{background:var(--exist);box-shadow:0 0 10px var(--exist);}
+  .lock-badge{
+    margin-left:auto;font-size:11px;font-weight:500;color:var(--text-dim);
+    background:var(--panel-2);border:1px solid var(--line);
+    padding:3px 9px;border-radius:999px;
+  }
+  .lock-badge.unlocked{color:#8be89a;border-color:#8be89a55;}
+  .card-note{color:var(--text-dim);font-size:12.5px;margin:0 0 16px;line-height:1.6;}
+
+  .row{
+    display:grid;
+    gap:8px;
+    margin-bottom:8px;
+    align-items:center;
+  }
+  .row.new-row{grid-template-columns:1fr 88px 32px;}
+  .row.exist-row{grid-template-columns:1fr 1fr 80px 32px;}
+  .row.head{color:var(--text-dim);font-size:11px;padding:0 2px;}
+
+  input{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    color:var(--text);
+    padding:9px 10px;
+    font-size:14px;
+    width:100%;
+    font-family:inherit;
+  }
+  input:focus{outline:2px solid var(--gold);outline-offset:1px;}
+  input.rank{text-align:right;}
+
+  .remove-btn{
+    background:none;border:none;color:var(--text-dim);
+    font-size:18px;cursor:pointer;width:32px;height:32px;
+    border-radius:8px;line-height:1;
+  }
+  .remove-btn:hover{background:#ffffff12;color:#ff6b6b;}
+  .remove-btn:focus-visible{outline:2px solid var(--gold);}
+
+  .add-btn{
+    width:100%;margin-top:6px;
+    background:transparent;
+    border:1.5px dashed var(--line);
+    color:var(--text-dim);
+    border-radius:10px;
+    padding:10px;
+    font-size:13.5px;
+    font-weight:500;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .add-btn:hover{border-color:var(--gold);color:var(--gold);}
+  .add-btn:focus-visible{outline:2px solid var(--gold);}
+
+  details{margin-top:10px;}
+  summary{
+    cursor:pointer;color:var(--text-dim);font-size:12.5px;
+    padding:6px 0;list-style:none;display:flex;align-items:center;gap:6px;
+  }
+  summary::-webkit-details-marker{display:none;}
+  summary::before{content:"▸";display:inline-block;transition:transform .15s;}
+  details[open] summary::before{transform:rotate(90deg);}
+  .breakpoint-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px;
+  }
+  .bp-pair{display:flex;align-items:center;gap:6px;background:var(--panel-2);
+    border:1px solid var(--line);border-radius:10px;padding:6px 8px;}
+  .bp-pair .bp-value{font-size:13px;font-weight:700;color:var(--text);min-width:24px;text-align:right;}
+  .bp-pair span{color:var(--text-dim);font-size:11px;white-space:nowrap;}
+
+  .compute-btn{
+    width:100%;
+    background:linear-gradient(135deg,var(--gold),#ff9d4d);
+    color:#221a05;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-family:"Zen Maru Gothic",sans-serif;
+    font-weight:700;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 8px 24px -8px #ffc85788;
+    margin:8px 0 22px;
+  }
+  .compute-btn:hover{filter:brightness(1.05);}
+  .compute-btn:focus-visible{outline:2px solid #fff;}
+
+  .parallel-buttons{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .parallel-btn{
+    flex:1;min-width:52px;
+    background:var(--panel-2);border:1px solid var(--line);
+    color:var(--text-dim);border-radius:10px;
+    padding:10px 6px;font-size:14px;font-weight:700;
+    font-family:"Zen Maru Gothic",sans-serif;cursor:pointer;
+  }
+  .parallel-btn.active{
+    background:var(--gold);border-color:var(--gold);color:#221a05;
+  }
+  .parallel-btn:focus-visible{outline:2px solid var(--gold);}
+
+  .error-box{
+    background:#3a1c2a;border:1px solid #ff6b6b55;color:#ffb3b3;
+    border-radius:12px;padding:14px 16px;font-size:13px;margin-bottom:18px;
+  }
+
+  .result-total{
+    text-align:center;padding:22px 16px 26px;
+  }
+  .result-total .label{color:var(--text-dim);font-size:12.5px;letter-spacing:.06em;}
+  .result-total .num{
+    font-family:"Zen Maru Gothic",sans-serif;
+    font-weight:900;
+    font-size:clamp(40px,14vw,56px);
+    color:var(--gold);
+    line-height:1.15;
+    text-shadow:0 0 24px #ffc85755;
+  }
+  .result-total .num span{font-size:.4em;color:var(--text-dim);font-weight:700;margin-left:4px;}
+
+  .room{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:12px;
+  }
+  .room-head{
+    display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;
+  }
+  .room-head .room-name{font-family:"Zen Maru Gothic",sans-serif;font-weight:700;font-size:13.5px;color:var(--text-dim);}
+  .room-head .room-cost{font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:20px;color:var(--gold);}
+  .room-head .room-cost span{font-size:11px;color:var(--text-dim);font-weight:500;margin-left:2px;}
+
+  .member-card{padding:4px 16px;}
+  .member-summary{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 2px;cursor:pointer;
+  }
+  .member-summary::before{color:var(--exist);}
+  .member-summary .m-name{
+    font-family:"Zen Maru Gothic",sans-serif;font-weight:700;font-size:14.5px;color:var(--text);
+  }
+  .member-summary .m-eff{
+    font-family:"Noto Sans JP",sans-serif;font-weight:700;font-size:11.5px;color:var(--gold);
+    margin-left:6px;
+  }
+  .member-summary .m-cost{
+    font-family:"Zen Maru Gothic",sans-serif;font-weight:900;font-size:16px;color:var(--gold);
+  }
+  .member-summary .m-cost span{font-size:10.5px;color:var(--text-dim);font-weight:500;margin-left:2px;}
+
+  .orbs{display:flex;flex-wrap:wrap;gap:8px;}
+  .orb{
+    display:flex;align-items:center;gap:6px;
+    padding:7px 12px 7px 8px;
+    border-radius:999px;
+    font-size:12.5px;
+    font-weight:500;
+  }
+  .orb .chip{width:8px;height:8px;border-radius:50%;flex:none;}
+  .orb.new{background:var(--new-dim);color:#ffd0b8;}
+  .orb.new .chip{background:var(--new);}
+  .orb.exist{background:var(--exist-dim);color:#c7f5f0;}
+  .orb.exist .chip{background:var(--exist);}
+  .orb b{font-weight:700;color:var(--text);}
+
+  footer{text-align:center;color:var(--text-dim);font-size:11.5px;margin-top:26px;line-height:1.8;}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header>
-<div class="eyebrow">MONST · KIZUNA MULTI PLANNER</div>
-<h1>絆マルチ<br>効率シミュレーター</h1>
-<p class="sub">新規の垢と既存メンバーの垢を、4人部屋の枠に収まるように自動で組み合わせて、全員と絆を貯めきるのに必要な最小周回数を計算します。</p>
-<p id="sync-status" style="font-size:12px;color:var(--text-dim);margin-top:10px;"></p>
-</header>
 
-<div id="error-slot"></div>
+  <header>
+    <div class="eyebrow">MONST · KIZUNA MULTI PLANNER</div>
+    <h1>絆マルチ<br>効率シミュレーター</h1>
+    <p class="sub">新規の垢と既存メンバーの垢を、4人部屋の枠に収まるように自動で組み合わせて、全員と絆を貯めきるのに必要な最小周回数を計算します。</p>
+    <p id="sync-status" style="font-size:12px;color:var(--text-dim);margin-top:10px;"></p>
+  </header>
 
-<!-- 新規アカウント -->
-<div class="card">
-<p class="card-title"><span class="dot new"></span>新規の垢</p>
-<p class="card-note">これから既存メンバー全員と絆を貯めたい、あなた側の垢です。何個でも追加できます。</p>
-<div class="row new-row head"><span>垢の名前</span><span>ランク</span><span></span></div>
-<div id="new-rows"></div>
-<button class="add-btn" id="add-new">＋ 新規の垢を追加</button>
-</div>
+  <div id="error-slot"></div>
 
-<!-- 既存メンバー -->
-<div class="card">
-<p class="card-title"><span class="dot exist"></span>既存メンバーの垢 <span id="lock-badge" class="lock-badge">🔒 ロック中</span></p>
-<p class="card-note">すでに絆を貯めたい相手側の垢です。同じ人の複数垢も、1行ずつ分けて入力してください。<b>編集にはパスワードが必要です(下の欄で解除)。</b></p>
-<details>
-<summary id="exist-list-summary">一覧を見る・編集する</summary>
-<div class="row exist-row head" style="margin-top:10px;"><span>メンバー名</span><span>垢の名前</span><span>ランク</span><span></span></div>
-<div id="exist-rows"></div>
-<button class="add-btn" id="add-exist">＋ 既存メンバーの垢を追加</button>
-<button class="compute-btn" id="exist-save-lock" style="display:none; margin-top:10px; padding:12px;">💾 保存してロック</button>
-</details>
-</div>
+  <!-- 新規アカウント -->
+  <div class="card">
+    <p class="card-title"><span class="dot new"></span>新規の垢</p>
+    <p class="card-note">これから既存メンバー全員と絆を貯めたい、あなた側の垢です。何個でも追加できます。</p>
+    <div class="row new-row head"><span>垢の名前</span><span>ランク</span><span></span></div>
+    <div id="new-rows"></div>
+    <button class="add-btn" id="add-new">＋ 新規の垢を追加</button>
+  </div>
 
-<!-- 同時に回せる部屋数 -->
-<div class="card">
-<p class="card-title" style="margin-bottom:4px;">同時に回せる部屋数</p>
-<p class="card-note">端末や人数が許す限り、複数の部屋を同時に回せる場合はここで選んでください。多いほど早く終わりますが、実際に用意できる人数・端末数に合わせて選んでください。</p>
-<div class="parallel-buttons" id="parallel-buttons"></div>
-</div>
+  <!-- 既存メンバー -->
+  <div class="card">
+    <p class="card-title"><span class="dot exist"></span>既存メンバーの垢 <span id="lock-badge" class="lock-badge">🔒 ロック中</span></p>
+    <p class="card-note">すでに絆を貯めたい相手側の垢です。同じ人の複数垢も、1行ずつ分けて入力してください。<b>編集にはパスワードが必要です(下の欄で解除)。</b></p>
+    <details>
+      <summary id="exist-list-summary">一覧を見る・編集する</summary>
+      <div class="row exist-row head" style="margin-top:10px;"><span>メンバー名</span><span>垢の名前</span><span>ランク</span><span></span></div>
+      <div id="exist-rows"></div>
+      <button class="add-btn" id="add-exist">＋ 既存メンバーの垢を追加</button>
 
-<!-- ランク差テーブル -->
-<div class="card">
-<details>
-<summary>ランク差 → 必要周回数の対応表</summary>
-<p class="card-note" style="margin-top:8px;">この差「以上」で右の周回数になります(小さいほど多く周回が必要)。</p>
-<div class="breakpoint-grid" id="bp-grid"></div>
-</details>
-</div>
+      <div id="bulk-import-box" style="display:none; margin-top:14px; border-top:1px solid var(--line); padding-top:14px;">
+        <p class="card-note" style="margin-bottom:8px;">1行に1件、「アカウント名 ランク」または「ランク アカウント名」の形で貼り付けると、まとめて追加できます。</p>
+        <textarea id="bulk-import-text" rows="6" placeholder="例:&#10;スズム① 2491&#10;2259 S" style="width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:10px; color:var(--text); padding:10px; font-size:13px; font-family:inherit;"></textarea>
+        <button class="add-btn" id="bulk-import-btn" style="margin-top:8px;">📋 貼り付けた内容をまとめて追加</button>
+        <p id="bulk-import-msg" class="card-note" style="margin-top:6px;"></p>
+      </div>
 
-<button class="compute-btn" id="compute">効率よく計算する</button>
-<div id="results"></div>
+      <button class="compute-btn" id="exist-save-lock" style="display:none; margin-top:10px; padding:12px;">💾 保存してロック</button>
+    </details>
+  </div>
 
-<!-- 編集パスワード -->
-<div class="card" id="password-card">
-<p class="card-title" style="margin-bottom:8px;">🔑 既存メンバーの編集パスワード</p>
-<p class="card-note">正しいパスワードを入れると、既存メンバー欄の追加・編集・削除ができるようになります(新規垢は常に自由に編集できます)。</p>
-<div style="display:flex; gap:8px;">
-<input type="password" id="password-input" placeholder="パスワード" style="flex:1;">
-<button class="add-btn" id="password-submit" style="width:auto; padding:9px 18px; margin-top:0;">解除</button>
-</div>
-<p id="password-msg" class="card-note" style="margin-top:8px;"></p>
-</div>
+  <!-- 同時に回せる部屋数 -->
+  <div class="card">
+    <p class="card-title" style="margin-bottom:4px;">同時に回せる部屋数</p>
+    <p class="card-note">端末や人数が許す限り、複数の部屋を同時に回せる場合はここで選んでください。多いほど早く終わりますが、実際に用意できる人数・端末数に合わせて選んでください。</p>
+    <div class="parallel-buttons" id="parallel-buttons"></div>
+  </div>
 
-<footer>新規の垢はできるだけまとめて全部屋に持ち込み、既存メンバーはランク差の近い(必要周回数が多い)者同士を同じ部屋にまとめることで、部屋数と総周回数を最小化しています。</footer>
+  <!-- ランク差テーブル -->
+  <div class="card">
+    <details>
+      <summary>ランク差 → 必要周回数の対応表</summary>
+      <p class="card-note" style="margin-top:8px;">この差「以上」で右の周回数になります(小さいほど多く周回が必要)。</p>
+      <div class="breakpoint-grid" id="bp-grid"></div>
+    </details>
+  </div>
+
+  <button class="compute-btn" id="compute">効率よく計算する</button>
+
+  <div id="results"></div>
+
+  <!-- 編集パスワード -->
+  <div class="card" id="password-card">
+    <p class="card-title" style="margin-bottom:8px;">🔑 既存メンバーの編集パスワード</p>
+    <p class="card-note">正しいパスワードを入れると、既存メンバー欄の追加・編集・削除ができるようになります(新規垢は常に自由に編集できます)。</p>
+    <div style="display:flex; gap:8px;">
+      <input type="password" id="password-input" placeholder="パスワード" style="flex:1;">
+      <button class="add-btn" id="password-submit" style="width:auto; padding:9px 18px; margin-top:0;">解除</button>
+    </div>
+    <p id="password-msg" class="card-note" style="margin-top:8px;"></p>
+  </div>
+
+  <footer>新規の垢はできるだけまとめて全部屋に持ち込み、既存メンバーはランク差の近い(必要周回数が多い)者同士を同じ部屋にまとめることで、部屋数と総周回数を最小化しています。</footer>
+
 </div>
 
 <script>
+const ITEM_ICON_SRC = 'data:image/png;base64,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';
+const SEED_EXIST_ACCOUNTS = [
+    { member:'1', sub:'スズム①', rank:2491 },
+    { member:'2', sub:'S', rank:2259 },
+    { member:'3', sub:'伽羅栖おてゃヤマピー', rank:2041 },
+    { member:'4', sub:'私はルリ②', rank:1931 },
+    { member:'5', sub:'SUGURU', rank:1896 },
+    { member:'6', sub:'グラ', rank:1847 },
+    { member:'7', sub:'AZUSA①', rank:1815 },
+    { member:'8', sub:'くちぽっち1号', rank:1572 },
+    { member:'9', sub:'正式トン社長', rank:1502 },
+    { member:'10', sub:'アグニ大統領箱3', rank:1501 },
+    { member:'11', sub:'ぱぴもっちo\'∧\'o', rank:1368 },
+    { member:'12', sub:'みちおじ', rank:1337 },
+    { member:'13', sub:'Ss', rank:1228 },
+    { member:'14', sub:'私はルリ③', rank:1172 },
+    { member:'15', sub:'なめ猫', rank:1129 },
+    { member:'16', sub:'ススム②', rank:1042 },
+    { member:'17', sub:'くちぽっち3号', rank:1024 },
+    { member:'18', sub:'ビックマムの妹かれん', rank:1019 },
+    { member:'19', sub:'Ssss', rank:934 },
+    { member:'20', sub:'Sss', rank:930 },
+    { member:'21', sub:'NT・R18メスOキ', rank:843 },
+    { member:'22', sub:'ミー^•ω•^', rank:840 },
+    { member:'23', sub:'伽羅栖@ヤマピー3', rank:815 },
+    { member:'24', sub:'サブもっち①o\'∧\'o', rank:797 },
+    { member:'25', sub:'ススム0', rank:757 },
+    { member:'26', sub:'ススム', rank:728 },
+    { member:'27', sub:'とっちゃん@ゆりな', rank:709 },
+    { member:'28', sub:'かなっぺ初号機', rank:627 },
+    { member:'29', sub:'とっちゃん@ゆりなガチャ禁', rank:596 },
+    { member:'30', sub:'伽羅栖@ヤマピー4', rank:587 },
+    { member:'31', sub:'かなっぺ3号機', rank:564 },
+    { member:'32', sub:'トントンガチャ禁ダヨ', rank:538 },
+    { member:'33', sub:'なめ猫①', rank:536 },
+    { member:'34', sub:'2×4', rank:521 },
+    { member:'35', sub:'CIMAきむゆう', rank:514 },
+    { member:'36', sub:'ススム④', rank:511 },
+    { member:'37', sub:'T・SFメスOキマ', rank:507 },
+    { member:'38', sub:'チビスケ', rank:302 },
+    { member:'39', sub:'サン', rank:141 },
+    { member:'40', sub:'SUGURU', rank:139 },
+    { member:'41', sub:'サブもっち②o\'∧\'o', rank:119 },
+    { member:'42', sub:'みちおじ-2nd-', rank:49 }
+  ];
+const EXIST_SEED_VERSION = 3;
 const STORE_KEY = 'kizuna-planner-state-v1';
 const EDIT_PASSWORD = '3567';
-const BLOB_URL = 'https://jsonblob.com/api/jsonBlob/019fba20-c009-74cb-ac8f-03e14598ddeb';
-
+const BLOB_URL = 'https://jsonblob.com/api/jsonBlob/019fc37c-c790-7ab6-86f6-f38ea30b3e70';
 let existingUnlocked = false;
 let saveTimer = null;
 
 function setSyncStatus(text, color){
-const el = document.getElementById('sync-status');
-if(el){ el.textContent = text; el.style.color = color || 'var(--text-dim)'; }
+  const el = document.getElementById('sync-status');
+  if(el){ el.textContent = text; el.style.color = color || 'var(--text-dim)'; }
 }
 
-// これはjsonblobへの初回接続に失敗した場合だけに使う「最後の砦」の初期値。
-// ここに書いた内容が既存メンバーの正データを上書きすることは絶対にない
-// (loadState内で、読み込みに成功した場合はこの値を一切使わない)。
 let state = {
-newAccounts: [
-{ name:'垢1', rank:356 },
-{ name:'垢2', rank:1245 }
-],
-existAccounts: [],
-breakpoints: [
-{x:0,y:8},{x:25,y:7},{x:50,y:6},{x:75,y:5},{x:100,y:4},{x:175,y:3},{x:325,y:2}
-],
-maxParallelRooms: 2
+  newAccounts: [
+    { name:'垢1', rank:356 },
+    { name:'垢2', rank:1245 }
+  ],
+  existAccounts: SEED_EXIST_ACCOUNTS,
+  breakpoints: [
+    {x:0,y:8},{x:25,y:7},{x:50,y:6},{x:75,y:5},{x:100,y:4},{x:175,y:3},{x:325,y:2}
+  ],
+  maxParallelRooms: 2,
+  seedVersion: EXIST_SEED_VERSION
 };
 
 async function loadState(){
-setSyncStatus('🔄 データを読み込み中...');
-try{
-const res = await fetch(BLOB_URL, { headers:{ 'Accept':'application/json' } });
-if(res.ok){
-const data = await res.json();
-if(data && data.newAccounts && data.existAccounts && data.breakpoints){
-state = data;
-if(!state.maxParallelRooms || state.maxParallelRooms < 1) state.maxParallelRooms = 2;
-if(state.maxParallelRooms > 4) state.maxParallelRooms = 4;
-}
-setSyncStatus('✅ みんなと共有中のデータです', '#8be89a');
-}else{
-setSyncStatus('⚠️ 読み込みに失敗しました(通信環境を確認してください)', '#ff9d9d');
-}
-}catch(e){
-console.error('読み込みに失敗しました', e);
-setSyncStatus('⚠️ 読み込みに失敗しました(通信環境を確認してください)', '#ff9d9d');
-}
-// 注意: ここでは絶対にstate.existAccountsを書き換えない。
-// 読み込みに成功していれば読み込んだ内容を、失敗していれば
-// 上のデフォルト(空)のままにして、誤って古いデータで上書き保存しないようにする。
+  setSyncStatus('🔄 データを読み込み中...');
+  try{
+    const res = await fetch(BLOB_URL + '?_=' + Date.now(), {
+      headers:{ 'Accept':'application/json' },
+      cache: 'no-store'
+    });
+    if(res.ok){
+      const data = await res.json();
+      if(data && data.newAccounts && data.existAccounts && data.breakpoints){
+        state = data;
+        if(!state.maxParallelRooms || state.maxParallelRooms < 1) state.maxParallelRooms = 2;
+        if(state.maxParallelRooms > 4) state.maxParallelRooms = 4;
+      }
+    }
+    setSyncStatus('✅ みんなと共有中のデータです', '#8be89a');
+  }catch(e){
+    console.error('読み込みに失敗しました', e);
+    setSyncStatus('⚠️ 読み込みに失敗しました(通信環境を確認してください)', '#ff9d9d');
+  }
 }
 
 async function saveStateNow(){
-try{
-setSyncStatus('🔄 保存中...');
-const res = await fetch(BLOB_URL, {
-method:'PUT',
-headers:{ 'Content-Type':'application/json' },
-body: JSON.stringify(state)
-});
-if(res.ok){
-setSyncStatus('✅ 保存しました(みんなに反映されます)', '#8be89a');
-}else{
-setSyncStatus('⚠️ 保存に失敗しました', '#ff9d9d');
-}
-}catch(e){
-console.error('保存に失敗しました', e);
-setSyncStatus('⚠️ 保存に失敗しました(通信環境を確認してください)', '#ff9d9d');
-}
+  try{
+    setSyncStatus('🔄 保存中...');
+    const res = await fetch(BLOB_URL, {
+      method:'PUT',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify(state),
+      cache: 'no-store'
+    });
+    if(res.ok){
+      setSyncStatus('✅ 保存しました(みんなに反映されます)', '#8be89a');
+    }else{
+      setSyncStatus('⚠️ 保存に失敗しました', '#ff9d9d');
+    }
+  }catch(e){
+    console.error('保存に失敗しました', e);
+    setSyncStatus('⚠️ 保存に失敗しました(通信環境を確認してください)', '#ff9d9d');
+  }
 }
 
 function saveState(){
-// 連続入力のたびに毎回通信しないよう、少し待ってからまとめて保存する
-setSyncStatus('✏️ 変更あり(まもなく保存)');
-clearTimeout(saveTimer);
-saveTimer = setTimeout(saveStateNow, 900);
+  // 連続入力のたびに毎回通信しないよう、少し待ってからまとめて保存する
+  setSyncStatus('✏️ 変更あり(まもなく保存)');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveStateNow, 900);
 }
 
 function renderNewRows(){
-const el = document.getElementById('new-rows');
-el.innerHTML = '';
-state.newAccounts.forEach((acc, i)=>{
-const row = document.createElement('div');
-row.className = 'row new-row';
-row.innerHTML = `
-<input type="text" value="${escapeHtml(acc.name)}" data-type="new-name" data-i="${i}" placeholder="例: 垢1">
-<input type="number" class="rank" value="${acc.rank}" data-type="new-rank" data-i="${i}" placeholder="ランク">
-<button class="remove-btn" data-type="new-remove" data-i="${i}" aria-label="削除">×</button>
-`;
-el.appendChild(row);
-});
+  const el = document.getElementById('new-rows');
+  el.innerHTML = '';
+  state.newAccounts.forEach((acc, i)=>{
+    const row = document.createElement('div');
+    row.className = 'row new-row';
+    row.innerHTML = `
+      <input type="text" value="${escapeHtml(acc.name)}" data-type="new-name" data-i="${i}" placeholder="例: 垢1">
+      <input type="number" class="rank" value="${acc.rank}" data-type="new-rank" data-i="${i}" placeholder="ランク">
+      <button class="remove-btn" data-type="new-remove" data-i="${i}" aria-label="削除">×</button>
+    `;
+    el.appendChild(row);
+  });
 }
 
 function renderExistRows(){
-const el = document.getElementById('exist-rows');
-el.innerHTML = '';
-const dis = existingUnlocked ? '' : 'disabled';
-state.existAccounts.forEach((acc, i)=>{
-const row = document.createElement('div');
-row.className = 'row exist-row';
-row.innerHTML = `
-<input type="text" value="${escapeHtml(acc.member)}" data-type="ex-member" data-i="${i}" placeholder="例: 藤岡" ${dis}>
-<input type="text" value="${escapeHtml(acc.sub)}" data-type="ex-sub" data-i="${i}" placeholder="例: 本垢" ${dis}>
-<input type="number" class="rank" value="${acc.rank}" data-type="ex-rank" data-i="${i}" placeholder="ランク" ${dis}>
-<button class="remove-btn" data-type="ex-remove" data-i="${i}" aria-label="削除" ${dis}>×</button>
-`;
-el.appendChild(row);
-});
-const addBtn = document.getElementById('add-exist');
-if(addBtn){ addBtn.disabled = !existingUnlocked; }
-const saveLockBtn = document.getElementById('exist-save-lock');
-if(saveLockBtn){ saveLockBtn.style.display = existingUnlocked ? 'block' : 'none'; }
-const badge = document.getElementById('lock-badge');
-if(badge){
-badge.textContent = existingUnlocked ? '🔓 編集可能' : '🔒 ロック中';
-badge.classList.toggle('unlocked', existingUnlocked);
-}
-const summary = document.getElementById('exist-list-summary');
-if(summary){
-summary.textContent = `一覧を見る・編集する(${state.existAccounts.length}件)`;
-}
+  const el = document.getElementById('exist-rows');
+  el.innerHTML = '';
+  const dis = existingUnlocked ? '' : 'disabled';
+  state.existAccounts.forEach((acc, i)=>{
+    const row = document.createElement('div');
+    row.className = 'row exist-row';
+    row.innerHTML = `
+      <input type="text" value="${escapeHtml(acc.member)}" data-type="ex-member" data-i="${i}" placeholder="例: 藤岡" ${dis}>
+      <input type="text" value="${escapeHtml(acc.sub)}" data-type="ex-sub" data-i="${i}" placeholder="例: 本垢" ${dis}>
+      <input type="number" class="rank" value="${acc.rank}" data-type="ex-rank" data-i="${i}" placeholder="ランク" ${dis}>
+      <button class="remove-btn" data-type="ex-remove" data-i="${i}" aria-label="削除" ${dis}>×</button>
+    `;
+    el.appendChild(row);
+  });
+  const addBtn = document.getElementById('add-exist');
+  if(addBtn){ addBtn.disabled = !existingUnlocked; }
+  const saveLockBtn = document.getElementById('exist-save-lock');
+  if(saveLockBtn){ saveLockBtn.style.display = existingUnlocked ? 'block' : 'none'; }
+  const bulkBox = document.getElementById('bulk-import-box');
+  if(bulkBox){ bulkBox.style.display = existingUnlocked ? 'block' : 'none'; }
+  const badge = document.getElementById('lock-badge');
+  if(badge){
+    badge.textContent = existingUnlocked ? '🔓 編集可能' : '🔒 ロック中';
+    badge.classList.toggle('unlocked', existingUnlocked);
+  }
+  const summary = document.getElementById('exist-list-summary');
+  if(summary){
+    summary.textContent = `一覧を見る・編集する(${state.existAccounts.length}件)`;
+  }
 }
 
 function renderBreakpoints(){
-const el = document.getElementById('bp-grid');
-el.innerHTML = '';
-state.breakpoints.forEach((bp)=>{
-const pair = document.createElement('div');
-pair.className = 'bp-pair';
-pair.innerHTML = `
-<span class="bp-value">${bp.x}</span>
-<span>以上 →</span>
-<span class="bp-value">${bp.y}</span>
-<span>回</span>
-`;
-el.appendChild(pair);
-});
+  const el = document.getElementById('bp-grid');
+  el.innerHTML = '';
+  state.breakpoints.forEach((bp)=>{
+    const pair = document.createElement('div');
+    pair.className = 'bp-pair';
+    pair.innerHTML = `
+      <span class="bp-value">${bp.x}</span>
+      <span>以上 →</span>
+      <span class="bp-value">${bp.y}</span>
+      <span>回</span>
+    `;
+    el.appendChild(pair);
+  });
 }
 
 function renderParallelButtons(){
-const el = document.getElementById('parallel-buttons');
-el.innerHTML = '';
-const options = [1,2,3,4];
-options.forEach(v=>{
-const btn = document.createElement('button');
-btn.className = 'parallel-btn' + (state.maxParallelRooms===v ? ' active' : '');
-btn.textContent = `${v}部屋`;
-btn.dataset.value = v;
-el.appendChild(btn);
-});
+  const el = document.getElementById('parallel-buttons');
+  el.innerHTML = '';
+  const options = [1,2,3,4];
+  options.forEach(v=>{
+    const btn = document.createElement('button');
+    btn.className = 'parallel-btn' + (state.maxParallelRooms===v ? ' active' : '');
+    btn.textContent = `${v}部屋`;
+    btn.dataset.value = v;
+    el.appendChild(btn);
+  });
 }
 
 function escapeHtml(s){
-return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 function attachListeners(){
-document.getElementById('new-rows').addEventListener('input', e=>{
-const t = e.target.dataset.type, i = +e.target.dataset.i;
-if(t==='new-name') state.newAccounts[i].name = e.target.value;
-if(t==='new-rank') state.newAccounts[i].rank = Number(e.target.value)||0;
-saveState();
-});
-document.getElementById('new-rows').addEventListener('click', e=>{
-if(e.target.dataset.type==='new-remove'){
-state.newAccounts.splice(+e.target.dataset.i,1);
-renderNewRows(); saveState();
-}
-});
-document.getElementById('add-new').addEventListener('click', ()=>{
-state.newAccounts.push({name:`垢${state.newAccounts.length+1}`, rank:0});
-renderNewRows(); saveState();
-});
+  document.getElementById('new-rows').addEventListener('input', e=>{
+    const t = e.target.dataset.type, i = +e.target.dataset.i;
+    if(t==='new-name') state.newAccounts[i].name = e.target.value;
+    if(t==='new-rank') state.newAccounts[i].rank = Number(e.target.value)||0;
+    saveState();
+  });
+  document.getElementById('new-rows').addEventListener('click', e=>{
+    if(e.target.dataset.type==='new-remove'){
+      state.newAccounts.splice(+e.target.dataset.i,1);
+      renderNewRows(); saveState();
+    }
+  });
+  document.getElementById('add-new').addEventListener('click', ()=>{
+    state.newAccounts.push({name:`垢${state.newAccounts.length+1}`, rank:0});
+    renderNewRows(); saveState();
+  });
 
-document.getElementById('exist-rows').addEventListener('input', e=>{
-if(!existingUnlocked) return;
-const t = e.target.dataset.type, i = +e.target.dataset.i;
-if(t==='ex-member') state.existAccounts[i].member = e.target.value;
-if(t==='ex-sub') state.existAccounts[i].sub = e.target.value;
-if(t==='ex-rank') state.existAccounts[i].rank = Number(e.target.value)||0;
-compute();
-});
-document.getElementById('exist-rows').addEventListener('click', e=>{
-if(!existingUnlocked) return;
-if(e.target.dataset.type==='ex-remove'){
-state.existAccounts.splice(+e.target.dataset.i,1);
-renderExistRows(); compute();
-}
-});
-document.getElementById('add-exist').addEventListener('click', ()=>{
-if(!existingUnlocked) return;
-state.existAccounts.push({member:'', sub:'本垢', rank:0});
-renderExistRows(); compute();
-});
+  document.getElementById('exist-rows').addEventListener('input', e=>{
+    if(!existingUnlocked) return;
+    const t = e.target.dataset.type, i = +e.target.dataset.i;
+    if(t==='ex-member') state.existAccounts[i].member = e.target.value;
+    if(t==='ex-sub') state.existAccounts[i].sub = e.target.value;
+    if(t==='ex-rank') state.existAccounts[i].rank = Number(e.target.value)||0;
+    compute();
+  });
+  document.getElementById('exist-rows').addEventListener('click', e=>{
+    if(!existingUnlocked) return;
+    if(e.target.dataset.type==='ex-remove'){
+      state.existAccounts.splice(+e.target.dataset.i,1);
+      renderExistRows(); compute();
+    }
+  });
+  document.getElementById('add-exist').addEventListener('click', ()=>{
+    if(!existingUnlocked) return;
+    state.existAccounts.push({member:'', sub:'本垢', rank:0});
+    renderExistRows(); compute();
+  });
 
-document.getElementById('password-submit').addEventListener('click', ()=>{
-const input = document.getElementById('password-input');
-const msg = document.getElementById('password-msg');
-if(input.value === EDIT_PASSWORD){
-existingUnlocked = true;
-input.value = '';
-msg.textContent = '解除しました。編集して、終わったら「保存してロック」を押してください。';
-msg.style.color = '#8be89a';
-renderExistRows();
-}else{
-msg.textContent = 'パスワードが違います。';
-msg.style.color = '#ff9d9d';
-}
-});
+  document.getElementById('bulk-import-btn').addEventListener('click', ()=>{
+    if(!existingUnlocked) return;
+    const textarea = document.getElementById('bulk-import-text');
+    const msg = document.getElementById('bulk-import-msg');
+    const lines = textarea.value.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+    if(lines.length===0){
+      msg.textContent = '貼り付ける内容がありません。';
+      msg.style.color = '#ff9d9d';
+      return;
+    }
+    let nextNum = state.existAccounts.length + 1;
+    let added = 0;
+    const failedLines = [];
+    lines.forEach(line=>{
+      // 行の中から最初の数字の並びをランクとして取り出し、残りをアカウント名にする
+      const match = line.match(/(\d+)/);
+      if(!match){ failedLines.push(line); return; }
+      const rank = Number(match[1]);
+      const name = line.replace(match[1], '').trim() || `垢${nextNum}`;
+      state.existAccounts.push({ member: String(nextNum), sub: name, rank: rank });
+      nextNum++;
+      added++;
+    });
+    textarea.value = '';
+    renderExistRows();
+    compute();
+    if(failedLines.length>0){
+      msg.textContent = `${added}件追加しました。${failedLines.length}件はランクの数字が見つからず、スキップしました。`;
+      msg.style.color = '#ffc857';
+    }else{
+      msg.textContent = `${added}件追加しました。内容を確認して「保存してロック」を押してください。`;
+      msg.style.color = '#8be89a';
+    }
+  });
 
-document.getElementById('exist-save-lock').addEventListener('click', async ()=>{
-await saveStateNow();
-existingUnlocked = false;
-renderExistRows();
-const msg = document.getElementById('password-msg');
-msg.textContent = '保存して編集をロックしました。';
-msg.style.color = '#8be89a';
-});
+  document.getElementById('password-submit').addEventListener('click', ()=>{
+    const input = document.getElementById('password-input');
+    const msg = document.getElementById('password-msg');
+    if(input.value === EDIT_PASSWORD){
+      existingUnlocked = true;
+      input.value = '';
+      msg.textContent = '解除しました。編集して、終わったら「保存してロック」を押してください。';
+      msg.style.color = '#8be89a';
+      renderExistRows();
+    }else{
+      msg.textContent = 'パスワードが違います。';
+      msg.style.color = '#ff9d9d';
+    }
+  });
 
-document.getElementById('compute').addEventListener('click', compute);
+  document.getElementById('exist-save-lock').addEventListener('click', async ()=>{
+    await saveStateNow();
+    existingUnlocked = false;
+    renderExistRows();
+    const msg = document.getElementById('password-msg');
+    msg.textContent = '保存して編集をロックしました。';
+    msg.style.color = '#8be89a';
+  });
 
-document.getElementById('parallel-buttons').addEventListener('click', e=>{
-if(e.target.classList.contains('parallel-btn')){
-state.maxParallelRooms = Number(e.target.dataset.value);
-renderParallelButtons();
-saveState();
-compute();
-}
-});
+  document.getElementById('compute').addEventListener('click', compute);
+
+  document.getElementById('parallel-buttons').addEventListener('click', e=>{
+    if(e.target.classList.contains('parallel-btn')){
+      state.maxParallelRooms = Number(e.target.dataset.value);
+      renderParallelButtons();
+      saveState();
+      compute();
+    }
+  });
 }
 
 function requiredCount(diff, breakpoints){
-const sorted = [...breakpoints].sort((a,b)=>a.x-b.x);
-let result = sorted.length ? sorted[0].y : 0;
-for(const bp of sorted){
-if(diff >= bp.x) result = bp.y; else break;
-}
-return result;
+  const sorted = [...breakpoints].sort((a,b)=>a.x-b.x);
+  let result = sorted.length ? sorted[0].y : 0;
+  for(const bp of sorted){
+    if(diff >= bp.x) result = bp.y; else break;
+  }
+  return result;
 }
 
+// N,E,R,cap(=4) から、1フェーズで理論上何ペアまでカバーできるかを最大化する
+// 部屋の人数配分パターンを求める。全体最適な1パターンだけでなく、それに近い
+// 複数パターンも候補として残しておく(フェーズによっては、理論上の最良パターン
+// より少し偏った配分の方がうまくハマることがあるため)。
 function computeShapeCombos(N, E, R, cap){
-const validShapes = [];
-for(let n=0; n<=Math.min(cap,N); n++){
-for(let e=0; e<=Math.min(cap-n,E); e++){
-if(n>0 && e>0) validShapes.push([n,e]);
-}
-}
-let bestScore = 0;
-let bestCombo = [];
-const all = [];
-function rec(roomIdx, remN, remE, combo, score){
-if(combo.length>0){ all.push({ combo:[...combo], score }); }
-if(score > bestScore){ bestScore = score; bestCombo = [...combo]; }
-if(roomIdx >= R) return;
-for(const [n,e] of validShapes){
-if(n<=remN && e<=remE){
-combo.push([n,e]);
-rec(roomIdx+1, remN-n, remE-e, combo, score + n*e);
-combo.pop();
-}
-}
-}
-rec(0, N, E, [], 0);
-const threshold = Math.max(1, bestScore - 3);
-const filtered = all.filter(c => c.score >= threshold);
-const seen = new Set();
-const uniq = [];
-for(const c of filtered){
-const key = c.combo.map(([n,e])=>`${n},${e}`).sort().join('|');
-if(!seen.has(key)){ seen.add(key); uniq.push(c.combo); }
-}
-return { all: uniq.length ? uniq : [[]], best: bestCombo.length ? bestCombo : [[]] };
+  const validShapes = [];
+  for(let n=0; n<=Math.min(cap,N); n++){
+    for(let e=0; e<=Math.min(cap-n,E); e++){
+      if(n>0 && e>0) validShapes.push([n,e]);
+    }
+  }
+  let bestScore = 0;
+  let bestCombo = [];
+  const all = [];
+  function rec(roomIdx, remN, remE, combo, score){
+    if(combo.length>0){ all.push({ combo:[...combo], score }); }
+    if(score > bestScore){ bestScore = score; bestCombo = [...combo]; }
+    if(roomIdx >= R) return;
+    for(const [n,e] of validShapes){
+      if(n<=remN && e<=remE){
+        combo.push([n,e]);
+        rec(roomIdx+1, remN-n, remE-e, combo, score + n*e);
+        combo.pop();
+      }
+    }
+  }
+  rec(0, N, E, [], 0);
+  const threshold = Math.max(1, bestScore - 3);
+  const filtered = all.filter(c => c.score >= threshold);
+  const seen = new Set();
+  const uniq = [];
+  for(const c of filtered){
+    const key = c.combo.map(([n,e])=>`${n},${e}`).sort().join('|');
+    if(!seen.has(key)){ seen.add(key); uniq.push(c.combo); }
+  }
+  return { all: uniq.length ? uniq : [[]], best: bestCombo.length ? bestCombo : [[]] };
 }
 
 function shuffleArr(arr, rng){
-const a = [...arr];
-for(let i=a.length-1; i>0; i--){
-const j = Math.floor(rng()*(i+1));
-[a[i],a[j]] = [a[j],a[i]];
-}
-return a;
+  const a = [...arr];
+  for(let i=a.length-1; i>0; i--){
+    const j = Math.floor(rng()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
 }
 
 function mulberry32(seed){
-return function(){
-seed |= 0; seed = seed + 0x6D2B79F5 | 0;
-let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
-t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-return ((t ^ t >>> 14) >>> 0) / 4294967296;
-};
+  return function(){
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
 }
 
+// 2つのラウンド間で、部屋の顔ぶれがどれだけ変わったかを数える
+// (同じ回数で終わるなら、これが少ないパターンを優先する)
 function computeMovementScore(rounds){
-let score = 0;
-const lastSig = new Map();
-rounds.forEach(rooms=>{
-const thisSig = new Map();
-rooms.forEach(room=>{
-const exIds = room.exAccs.map(e=>e.i).sort((a,b)=>a-b).join(',');
-const newIds = room.newAccs.map(n=>n.i).sort((a,b)=>a-b).join(',');
-room.newAccs.forEach(n=> thisSig.set(`new-${n.i}`, exIds));
-room.exAccs.forEach(e=> thisSig.set(`ex-${e.i}`, newIds));
-});
-thisSig.forEach((sig,key)=>{
-if(lastSig.has(key) && lastSig.get(key)!==sig) score++;
-});
-thisSig.forEach((sig,key)=> lastSig.set(key, sig));
-});
-return score;
+  let score = 0;
+  const lastSig = new Map();
+  rounds.forEach(rooms=>{
+    const thisSig = new Map();
+    rooms.forEach(room=>{
+      const exIds = room.exAccs.map(e=>e.i).sort((a,b)=>a-b).join(',');
+      const newIds = room.newAccs.map(n=>n.i).sort((a,b)=>a-b).join(',');
+      room.newAccs.forEach(n=> thisSig.set(`new-${n.i}`, exIds));
+      room.exAccs.forEach(e=> thisSig.set(`ex-${e.i}`, newIds));
+    });
+    thisSig.forEach((sig,key)=>{
+      if(lastSig.has(key) && lastSig.get(key)!==sig) score++;
+    });
+    thisSig.forEach((sig,key)=> lastSig.set(key, sig));
+  });
+  return score;
 }
 
+// 各アカウントが最後に部屋にいたラウンド番号の合計。小さいほど、
+// 必要な人から順に早く「卒業」してその後は関わらずに済んでいる、ということになる
 function computeLateFinishScore(rounds){
-const lastRound = new Map();
-rounds.forEach((rooms, idx)=>{
-rooms.forEach(room=>{
-room.newAccs.forEach(n=> lastRound.set(`new-${n.i}`, idx+1));
-room.exAccs.forEach(e=> lastRound.set(`ex-${e.i}`, idx+1));
-});
-});
-let sum = 0;
-lastRound.forEach(v=> sum += v);
-return sum;
+  const lastRound = new Map();
+  rounds.forEach((rooms, idx)=>{
+    rooms.forEach(room=>{
+      room.newAccs.forEach(n=> lastRound.set(`new-${n.i}`, idx+1));
+      room.exAccs.forEach(e=> lastRound.set(`ex-${e.i}`, idx+1));
+    });
+  });
+  let sum = 0;
+  lastRound.forEach(v=> sum += v);
+  return sum;
 }
 
+// 方式A: 毎ラウンド、残り必要数が多いペアを優先して部屋を組み直す(効率重視)
 function formRoundNeedBased(activeNew, activeEx, needMap, shapePool, rng){
-const shapes = shapePool[Math.floor(rng()*shapePool.length)];
-let availNew = [...activeNew];
-let availEx = [...activeEx];
-const rooms = [];
-const shapeOrder = shuffleArr(shapes, rng);
-for(const [ni, ei] of shapeOrder){
-if(availNew.length===0 || availEx.length===0) continue;
-const needOfNew = (n) => availEx.reduce((s,e)=> s + (needMap.get(`${n.i}-${e.i}`)||0), 0);
-const sortedNew = shuffleArr(availNew, rng).sort((a,b)=>needOfNew(b)-needOfNew(a));
-const chosenNew = sortedNew.slice(0, Math.min(ni, availNew.length));
-const needOfEx = (e) => chosenNew.reduce((s,n)=> s + (needMap.get(`${n.i}-${e.i}`)||0), 0);
-const sortedEx = shuffleArr(availEx, rng).sort((a,b)=>needOfEx(b)-needOfEx(a));
-const chosenEx = sortedEx.slice(0, Math.min(ei, availEx.length));
-if(chosenNew.length===0 || chosenEx.length===0) continue;
-availNew = availNew.filter(n=>!chosenNew.includes(n));
-availEx = availEx.filter(e=>!chosenEx.includes(e));
-rooms.push({ newAccs: chosenNew, exAccs: chosenEx });
-}
-return rooms;
+  const shapes = shapePool[Math.floor(rng()*shapePool.length)];
+  let availNew = [...activeNew];
+  let availEx = [...activeEx];
+  const rooms = [];
+  const shapeOrder = shuffleArr(shapes, rng);
+  for(const [ni, ei] of shapeOrder){
+    if(availNew.length===0 || availEx.length===0) continue;
+    const needOfNew = (n) => availEx.reduce((s,e)=> s + (needMap.get(`${n.i}-${e.i}`)||0), 0);
+    const sortedNew = shuffleArr(availNew, rng).sort((a,b)=>needOfNew(b)-needOfNew(a));
+    const chosenNew = sortedNew.slice(0, Math.min(ni, availNew.length));
+
+    const needOfEx = (e) => chosenNew.reduce((s,n)=> s + (needMap.get(`${n.i}-${e.i}`)||0), 0);
+    const sortedEx = shuffleArr(availEx, rng).sort((a,b)=>needOfEx(b)-needOfEx(a));
+    const chosenEx = sortedEx.slice(0, Math.min(ei, availEx.length));
+
+    if(chosenNew.length===0 || chosenEx.length===0) continue;
+
+    availNew = availNew.filter(n=>!chosenNew.includes(n));
+    availEx = availEx.filter(e=>!chosenEx.includes(e));
+    rooms.push({ newAccs: chosenNew, exAccs: chosenEx });
+  }
+  return rooms;
 }
 
 function attemptNeedBased(newAccs, exAccs, breakpoints, maxParallel, rng){
-const needMap = new Map();
-newAccs.forEach((n,ni)=>{
-exAccs.forEach((e,ei)=>{
-const cost = requiredCount(Math.abs(n.rank - e.rank), breakpoints);
-if(cost > 0) needMap.set(`${ni}-${ei}`, cost);
-});
-});
-const indexedNew = newAccs.map((n,i)=>({ ...n, i }));
-const indexedEx = exAccs.map((e,i)=>({ ...e, i }));
-const rounds = [];
-let guard = 0;
-while(needMap.size > 0 && guard < 1000){
-guard++;
-const activeNewIdx = new Set([...needMap.keys()].map(k=>k.split('-')[0]));
-const activeExIdx = new Set([...needMap.keys()].map(k=>k.split('-')[1]));
-const activeNew = indexedNew.filter(n=>activeNewIdx.has(String(n.i)));
-const activeEx = indexedEx.filter(e=>activeExIdx.has(String(e.i)));
-const { all, best } = computeShapeCombos(activeNew.length, activeEx.length, maxParallel, 4);
-const pool = (guard % 2 === 0) ? [best] : all;
-const rooms = formRoundNeedBased(activeNew, activeEx, needMap, pool, rng);
-if(rooms.length === 0) break;
-rooms.forEach(room=>{
-room.newAccs.forEach(n=>{
-room.exAccs.forEach(e=>{
-const key = `${n.i}-${e.i}`;
-if(needMap.has(key)){
-const v = needMap.get(key) - 1;
-if(v <= 0) needMap.delete(key); else needMap.set(key, v);
-}
-});
-});
-});
-rounds.push(rooms);
-}
-return { rounds, total: rounds.length, movement: computeMovementScore(rounds), lateFinish: computeLateFinishScore(rounds) };
+  const needMap = new Map();
+  newAccs.forEach((n,ni)=>{
+    exAccs.forEach((e,ei)=>{
+      const cost = requiredCount(Math.abs(n.rank - e.rank), breakpoints);
+      if(cost > 0) needMap.set(`${ni}-${ei}`, cost);
+    });
+  });
+  const indexedNew = newAccs.map((n,i)=>({ ...n, i }));
+  const indexedEx = exAccs.map((e,i)=>({ ...e, i }));
+
+  const rounds = [];
+  let guard = 0;
+
+  while(needMap.size > 0 && guard < 1000){
+    guard++;
+    const activeNewIdx = new Set([...needMap.keys()].map(k=>k.split('-')[0]));
+    const activeExIdx = new Set([...needMap.keys()].map(k=>k.split('-')[1]));
+    const activeNew = indexedNew.filter(n=>activeNewIdx.has(String(n.i)));
+    const activeEx = indexedEx.filter(e=>activeExIdx.has(String(e.i)));
+
+    const { all, best } = computeShapeCombos(activeNew.length, activeEx.length, maxParallel, 4);
+    const pool = (guard % 2 === 0) ? [best] : all;
+    const rooms = formRoundNeedBased(activeNew, activeEx, needMap, pool, rng);
+    if(rooms.length === 0) break;
+
+    rooms.forEach(room=>{
+      room.newAccs.forEach(n=>{
+        room.exAccs.forEach(e=>{
+          const key = `${n.i}-${e.i}`;
+          if(needMap.has(key)){
+            const v = needMap.get(key) - 1;
+            if(v <= 0) needMap.delete(key); else needMap.set(key, v);
+          }
+        });
+      });
+    });
+    rounds.push(rooms);
+  }
+
+  return { rounds, total: rounds.length, movement: computeMovementScore(rounds), lateFinish: computeLateFinishScore(rounds) };
 }
 
+// 方式B: 前のラウンドのメンバーをできるだけ維持し、必要がなくなった人だけ入れ替える
+// (移動回数を減らすことを優先。乱数でタイブレークして複数パターン試す)
 function attemptContinuity(newAccs, exAccs, breakpoints, maxParallel, rng){
-const needMap = new Map();
-newAccs.forEach((n,ni)=> exAccs.forEach((e,ei)=>{
-const cost = requiredCount(Math.abs(n.rank - e.rank), breakpoints);
-if(cost > 0) needMap.set(`${ni}-${ei}`, cost);
-}));
-const indexedNew = newAccs.map((n,i)=>({ ...n, i }));
-const indexedEx = exAccs.map((e,i)=>({ ...e, i }));
-function hasAnyNeed(n, e){ return needMap.has(`${n.i}-${e.i}`); }
-let currentRooms = [];
-const rounds = [];
-let guard = 0;
-while(needMap.size > 0 && guard < 1000){
-guard++;
-let newRooms = currentRooms.map(room=>{
-const keepNew = room.newAccs.filter(n=> room.exAccs.some(e=>hasAnyNeed(n,e)));
-const keepEx = room.exAccs.filter(e=> room.newAccs.some(n=>hasAnyNeed(n,e)));
-return { newAccs: keepNew, exAccs: keepEx };
-}).filter(room=> room.newAccs.length>0 && room.exAccs.length>0);
-let usedNewIds = new Set(newRooms.flatMap(r=>r.newAccs.map(n=>n.i)));
-let usedExIds = new Set(newRooms.flatMap(r=>r.exAccs.map(e=>e.i)));
-newRooms.forEach(room=>{
-while(room.newAccs.length + room.exAccs.length < 4){
-let added = false;
-const exCands = shuffleArr(indexedEx.filter(e=>!usedExIds.has(e.i) && room.newAccs.some(n=>hasAnyNeed(n,e))), rng);
-if(exCands.length>0){
-room.exAccs.push(exCands[0]); usedExIds.add(exCands[0].i); added=true;
-}
-if(room.newAccs.length + room.exAccs.length >= 4) break;
-if(!added){
-const newCands = shuffleArr(indexedNew.filter(n=>!usedNewIds.has(n.i) && room.exAccs.some(e=>hasAnyNeed(n,e))), rng);
-if(newCands.length>0){
-room.newAccs.push(newCands[0]); usedNewIds.add(newCands[0].i); added=true;
-}
-}
-if(!added) break;
-}
-});
-while(newRooms.length < maxParallel){
-const leftoverNew = shuffleArr(indexedNew.filter(n=>!usedNewIds.has(n.i) && [...needMap.keys()].some(k=>k.startsWith(`${n.i}-`))), rng);
-const leftoverEx = shuffleArr(indexedEx.filter(e=>!usedExIds.has(e.i) && [...needMap.keys()].some(k=>k.endsWith(`-${e.i}`))), rng);
-if(leftoverNew.length===0 || leftoverEx.length===0) break;
-const { all } = computeShapeCombos(leftoverNew.length, leftoverEx.length, 1, 4);
-const shapeGroup = all[Math.floor(rng()*all.length)] || all[0];
-const shape = shapeGroup && shapeGroup[0];
-if(!shape) break;
-const [ni, ei] = shape;
-const needOfNew = (n) => leftoverEx.reduce((s,e)=> s + (needMap.get(`${n.i}-${e.i}`)||0), 0);
-const sortedNew = shuffleArr(leftoverNew, rng).sort((a,b)=>needOfNew(b)-needOfNew(a));
-const chosenNew = sortedNew.slice(0, ni);
-const needOfEx = (e) => chosenNew.reduce((s,n)=> s+(needMap.get(`${n.i}-${e.i}`)||0),0);
-const sortedEx = shuffleArr(leftoverEx, rng).sort((a,b)=>needOfEx(b)-needOfEx(a));
-const chosenEx = sortedEx.slice(0, ei);
-if(chosenNew.length===0 || chosenEx.length===0) break;
-chosenNew.forEach(n=>usedNewIds.add(n.i));
-chosenEx.forEach(e=>usedExIds.add(e.i));
-newRooms.push({ newAccs: chosenNew, exAccs: chosenEx });
-}
-if(newRooms.length === 0) break;
-newRooms.forEach(room=>{
-room.newAccs.forEach(n=> room.exAccs.forEach(e=>{
-const key = `${n.i}-${e.i}`;
-if(needMap.has(key)){
-const v = needMap.get(key) - 1;
-if(v <= 0) needMap.delete(key); else needMap.set(key, v);
-}
-}));
-});
-rounds.push(newRooms);
-currentRooms = newRooms;
-}
-return { rounds, total: rounds.length, movement: computeMovementScore(rounds), lateFinish: computeLateFinishScore(rounds) };
+  const needMap = new Map();
+  newAccs.forEach((n,ni)=> exAccs.forEach((e,ei)=>{
+    const cost = requiredCount(Math.abs(n.rank - e.rank), breakpoints);
+    if(cost > 0) needMap.set(`${ni}-${ei}`, cost);
+  }));
+  const indexedNew = newAccs.map((n,i)=>({ ...n, i }));
+  const indexedEx = exAccs.map((e,i)=>({ ...e, i }));
+
+  function hasAnyNeed(n, e){ return needMap.has(`${n.i}-${e.i}`); }
+
+  let currentRooms = [];
+  const rounds = [];
+  let guard = 0;
+
+  while(needMap.size > 0 && guard < 1000){
+    guard++;
+    let newRooms = currentRooms.map(room=>{
+      const keepNew = room.newAccs.filter(n=> room.exAccs.some(e=>hasAnyNeed(n,e)));
+      const keepEx = room.exAccs.filter(e=> room.newAccs.some(n=>hasAnyNeed(n,e)));
+      return { newAccs: keepNew, exAccs: keepEx };
+    }).filter(room=> room.newAccs.length>0 && room.exAccs.length>0);
+
+    let usedNewIds = new Set(newRooms.flatMap(r=>r.newAccs.map(n=>n.i)));
+    let usedExIds = new Set(newRooms.flatMap(r=>r.exAccs.map(e=>e.i)));
+
+    newRooms.forEach(room=>{
+      while(room.newAccs.length + room.exAccs.length < 4){
+        let added = false;
+        const exCands = shuffleArr(indexedEx.filter(e=>!usedExIds.has(e.i) && room.newAccs.some(n=>hasAnyNeed(n,e))), rng);
+        if(exCands.length>0){
+          room.exAccs.push(exCands[0]); usedExIds.add(exCands[0].i); added=true;
+        }
+        if(room.newAccs.length + room.exAccs.length >= 4) break;
+        if(!added){
+          const newCands = shuffleArr(indexedNew.filter(n=>!usedNewIds.has(n.i) && room.exAccs.some(e=>hasAnyNeed(n,e))), rng);
+          if(newCands.length>0){
+            room.newAccs.push(newCands[0]); usedNewIds.add(newCands[0].i); added=true;
+          }
+        }
+        if(!added) break;
+      }
+    });
+
+    while(newRooms.length < maxParallel){
+      const leftoverNew = shuffleArr(indexedNew.filter(n=>!usedNewIds.has(n.i) && [...needMap.keys()].some(k=>k.startsWith(`${n.i}-`))), rng);
+      const leftoverEx = shuffleArr(indexedEx.filter(e=>!usedExIds.has(e.i) && [...needMap.keys()].some(k=>k.endsWith(`-${e.i}`))), rng);
+      if(leftoverNew.length===0 || leftoverEx.length===0) break;
+      const { all } = computeShapeCombos(leftoverNew.length, leftoverEx.length, 1, 4);
+      const shapeGroup = all[Math.floor(rng()*all.length)] || all[0];
+      const shape = shapeGroup && shapeGroup[0];
+      if(!shape) break;
+      const [ni, ei] = shape;
+      const needOfNew = (n) => leftoverEx.reduce((s,e)=> s + (needMap.get(`${n.i}-${e.i}`)||0), 0);
+      const sortedNew = shuffleArr(leftoverNew, rng).sort((a,b)=>needOfNew(b)-needOfNew(a));
+      const chosenNew = sortedNew.slice(0, ni);
+      const needOfEx = (e) => chosenNew.reduce((s,n)=> s+(needMap.get(`${n.i}-${e.i}`)||0),0);
+      const sortedEx = shuffleArr(leftoverEx, rng).sort((a,b)=>needOfEx(b)-needOfEx(a));
+      const chosenEx = sortedEx.slice(0, ei);
+      if(chosenNew.length===0 || chosenEx.length===0) break;
+      chosenNew.forEach(n=>usedNewIds.add(n.i));
+      chosenEx.forEach(e=>usedExIds.add(e.i));
+      newRooms.push({ newAccs: chosenNew, exAccs: chosenEx });
+    }
+
+    if(newRooms.length === 0) break;
+
+    newRooms.forEach(room=>{
+      room.newAccs.forEach(n=> room.exAccs.forEach(e=>{
+        const key = `${n.i}-${e.i}`;
+        if(needMap.has(key)){
+          const v = needMap.get(key) - 1;
+          if(v <= 0) needMap.delete(key); else needMap.set(key, v);
+        }
+      }));
+    });
+
+    rounds.push(newRooms);
+    currentRooms = newRooms;
+  }
+
+  return { rounds, total: rounds.length, movement: computeMovementScore(rounds), lateFinish: computeLateFinishScore(rounds) };
 }
 
+// 新規×既存の全ペアについて、必要回数ぶん一緒の部屋になるまでスケジュールする。
+// 「効率重視(方式A)」と「移動回数最小重視(方式B)」の両方を何パターンも試し、
+// 最少の周回数の中から、必要回数が少ない垢ほど早めに卒業できて(lateFinishが小さい)、
+// かつメンバーの入れ替えも少ないパターンを採用する。
+// ただし、ランクがバラバラで最少周回数を達成する組み方がほぼ1通りしかなく
+// 入れ替えが極端に多くなる場合は、+1回だけ許容して大幅に整理された組み方を優先する。
 function buildSchedule(newAccs, exAccs, breakpoints, maxParallel){
-const results = [];
-const trialsEach = 400;
-for(let t=0; t<trialsEach; t++){
-results.push(attemptNeedBased(newAccs, exAccs, breakpoints, maxParallel, mulberry32(t*7919 + 13)));
+  const results = [];
+  const trialsEach = 400;
+  for(let t=0; t<trialsEach; t++){
+    results.push(attemptNeedBased(newAccs, exAccs, breakpoints, maxParallel, mulberry32(t*7919 + 13)));
+  }
+  for(let t=0; t<trialsEach; t++){
+    results.push(attemptContinuity(newAccs, exAccs, breakpoints, maxParallel, mulberry32(t*104729 + 31)));
+  }
+
+  function pickBest(pool){
+    const minLate = Math.min(...pool.map(r=>r.lateFinish));
+    const nearBestLate = pool.filter(r=>r.lateFinish <= minLate + 5);
+    nearBestLate.sort((a,b)=>a.movement-b.movement);
+    return nearBestLate[0];
+  }
+
+  const minTotal = Math.min(...results.map(r=>r.total));
+  const atMin = results.filter(r=>r.total===minTotal);
+  const bestAtMin = pickBest(atMin);
+
+  const atMinPlus1 = results.filter(r=>r.total===minTotal+1);
+  if(atMinPlus1.length > 0){
+    const bestAtPlus1 = pickBest(atMinPlus1);
+    // 入れ替えがもともとかなり多い(15回以上)場合に限り、
+    // +1回で6割以下まで大幅に減るなら、そちらを採用する
+    if(bestAtMin.movement >= 15 && bestAtPlus1.movement <= bestAtMin.movement * 0.8){
+      return bestAtPlus1;
+    }
+  }
+
+  return bestAtMin;
 }
-for(let t=0; t<trialsEach; t++){
-results.push(attemptContinuity(newAccs, exAccs, breakpoints, maxParallel, mulberry32(t*104729 + 31)));
-}
-function pickBest(pool){
-const minLate = Math.min(...pool.map(r=>r.lateFinish));
-const nearBestLate = pool.filter(r=>r.lateFinish <= minLate + 5);
-nearBestLate.sort((a,b)=>a.movement-b.movement);
-return nearBestLate[0];
-}
-const minTotal = Math.min(...results.map(r=>r.total));
-const atMin = results.filter(r=>r.total===minTotal);
-const bestAtMin = pickBest(atMin);
-const atMinPlus1 = results.filter(r=>r.total===minTotal+1);
-if(atMinPlus1.length > 0){
-const bestAtPlus1 = pickBest(atMinPlus1);
-if(bestAtMin.movement >= 15 && bestAtPlus1.movement <= bestAtMin.movement * 0.8){
-return bestAtPlus1;
-}
-}
-return bestAtMin;
-}
+
 
 function compute(){
-const errSlot = document.getElementById('error-slot');
-const resSlot = document.getElementById('results');
-errSlot.innerHTML = '';
-resSlot.innerHTML = '';
+  const errSlot = document.getElementById('error-slot');
+  const resSlot = document.getElementById('results');
+  errSlot.innerHTML = '';
+  resSlot.innerHTML = '';
 
-const newAccs = state.newAccounts.filter(a=>a.name.trim()!=='');
-const exAccs = state.existAccounts.filter(a=>a.member.trim()!=='');
+  const newAccs = state.newAccounts.filter(a=>a.name.trim()!=='');
+  const exAccs = state.existAccounts.filter(a=>a.member.trim()!=='');
 
-if(newAccs.length === 0){
-errSlot.innerHTML = `<div class="error-box">新規の垢を1つ以上入力してください。</div>`;
-return;
-}
-if(exAccs.length === 0){
-errSlot.innerHTML = `<div class="error-box">既存メンバーの垢を1つ以上入力してください。</div>`;
-return;
-}
+  if(newAccs.length === 0){
+    errSlot.innerHTML = `<div class="error-box">新規の垢を1つ以上入力してください。</div>`;
+    return;
+  }
+  if(exAccs.length === 0){
+    errSlot.innerHTML = `<div class="error-box">既存メンバーの垢を1つ以上入力してください。</div>`;
+    return;
+  }
 
-const maxParallel = state.maxParallelRooms || 1;
-let html = ``;
+  const maxParallel = state.maxParallelRooms || 1;
+  let html = ``;
 
-function roomsSignature(rooms){
-return rooms.map(room=>{
-const newIds = room.newAccs.map(n=>n.i).sort((a,b)=>a-b).join(',');
-const exIds = room.exAccs.map(e=>e.i).sort((a,b)=>a-b).join(',');
-return `${newIds}|${exIds}`;
-}).sort().join(';');
-}
+  function roomsSignature(rooms){
+    return rooms.map(room=>{
+      const newIds = room.newAccs.map(n=>n.i).sort((a,b)=>a-b).join(',');
+      const exIds = room.exAccs.map(e=>e.i).sort((a,b)=>a-b).join(',');
+      return `${newIds}|${exIds}`;
+    }).sort().join(';');
+  }
 
-function groupConsecutiveRounds(rounds){
-const groups = [];
-rounds.forEach((rooms, idx)=>{
-const sig = roomsSignature(rooms);
-const last = groups[groups.length - 1];
-if(last && last.sig === sig){
-last.endIdx = idx;
-}else{
-groups.push({ sig, rooms, startIdx: idx, endIdx: idx });
-}
-});
-return groups;
-}
+  // 連続して同じ組み合わせのラウンドを1つにまとめる(「1〜3周目」のように表示するため)
+  function groupConsecutiveRounds(rounds){
+    const groups = [];
+    rounds.forEach((rooms, idx)=>{
+      const sig = roomsSignature(rooms);
+      const last = groups[groups.length - 1];
+      if(last && last.sig === sig){
+        last.endIdx = idx;
+      }else{
+        groups.push({ sig, rooms, startIdx: idx, endIdx: idx });
+      }
+    });
+    return groups;
+  }
 
-const memberNames = [...new Set(exAccs.map(e=>e.member))];
-memberNames.forEach(m=>{
-const memberAccs = exAccs.filter(e=>e.member===m);
-const schedule = buildSchedule(newAccs, memberAccs, state.breakpoints, maxParallel);
-const groups = groupConsecutiveRounds(schedule.rounds);
+  // 既存メンバーごとの最短周回数(タップで、その人の複数垢をまとめて考慮した
+  // 同時並行スケジュールの内訳が見える)
+  const memberNames = [...new Set(exAccs.map(e=>e.member))];
+  memberNames.forEach(m=>{
+    const memberAccs = exAccs.filter(e=>e.member===m);
+    const schedule = buildSchedule(newAccs, memberAccs, state.breakpoints, maxParallel);
+    const groups = groupConsecutiveRounds(schedule.rounds);
+    let roundsHtml = '';
+    groups.forEach(group=>{
+      let roomsInner = '';
+      group.rooms.forEach((room, rIdx)=>{
+        const newOrbs = room.newAccs.map(n=>`<div class="orb new"><span class="chip"></span>${escapeHtml(n.name)} <b>Rank ${n.rank}</b></div>`).join('');
+        const exOrbs = room.exAccs.map(e=>`<div class="orb exist"><span class="chip"></span>${escapeHtml(e.sub)} <b>Rank ${e.rank}</b></div>`).join('');
+        roomsInner += `
+          <div class="room" style="margin-bottom:8px;">
+            <div class="room-head">
+              <span class="room-name">部屋 ${rIdx+1}</span>
+            </div>
+            <div class="orbs">${newOrbs}${exOrbs}</div>
+          </div>
+        `;
+      });
+      const startLabel = group.startIdx + 1;
+      const endLabel = group.endIdx + 1;
+      const label = startLabel === endLabel
+        ? `${startLabel}周目(同時に${group.rooms.length}部屋)`
+        : `${startLabel}〜${endLabel}周目まで同じ(同時に${group.rooms.length}部屋・${endLabel - startLabel + 1}回)`;
+      roundsHtml += `
+        <div style="margin-bottom:14px;">
+          <p class="card-note" style="margin:0 0 6px 2px;">${label}</p>
+          ${roomsInner}
+        </div>
+      `;
+    });
+    // 効率スコア = 合計の絆貯まり回数 ÷ 実際のプレイ回数(周回数)。
+    // 数字が大きいほど「プレイ数のわりに絆がよく貯まる」効率のいい相手ということになる
+    const totalBondUps = memberAccs.reduce((sum, ex) => {
+      return sum + newAccs.reduce((s2, n) => s2 + requiredCount(Math.abs(n.rank - ex.rank), state.breakpoints), 0);
+    }, 0);
+    const efficiency = schedule.total > 0 ? (totalBondUps / schedule.total) : 0;
+    html += `
+      <details class="card member-card">
+        <summary class="member-summary">
+          <span class="m-name">${escapeHtml(m)} <span class="m-eff">効率 ${efficiency.toFixed(1)}</span></span>
+          <span class="m-cost">${schedule.total}<span>回</span></span>
+        </summary>
+        <div style="padding-bottom:10px;">${roundsHtml}</div>
+      </details>
+    `;
+  });
 
-let roundsHtml = '';
-groups.forEach(group=>{
-let roomsInner = '';
-group.rooms.forEach((room, rIdx)=>{
-const newOrbs = room.newAccs.map(n=>`<div class="orb new"><span class="chip"></span>${escapeHtml(n.name)} <b>Rank ${n.rank}</b></div>`).join('');
-const exOrbs = room.exAccs.map(e=>`<div class="orb exist"><span class="chip"></span>${escapeHtml(e.sub)} <b>Rank ${e.rank}</b></div>`).join('');
-roomsInner += `
-<div class="room" style="margin-bottom:8px;">
-<div class="room-head">
-<span class="room-name">部屋 ${rIdx+1}</span>
-</div>
-<div class="orbs">${newOrbs}${exOrbs}</div>
-</div>
-`;
-});
-const startLabel = group.startIdx + 1;
-const endLabel = group.endIdx + 1;
-const label = startLabel === endLabel
-? `${startLabel}周目(同時に${group.rooms.length}部屋)`
-: `${startLabel}〜${endLabel}周目まで同じ(同時に${group.rooms.length}部屋・${endLabel - startLabel + 1}回)`;
-roundsHtml += `
-<div style="margin-bottom:14px;">
-<p class="card-note" style="margin:0 0 6px 2px;">${label}</p>
-${roomsInner}
-</div>
-`;
-});
-
-const totalBondUps = memberAccs.reduce((sum, ex) => {
-return sum + newAccs.reduce((s2, n) => s2 + requiredCount(Math.abs(n.rank - ex.rank), state.breakpoints), 0);
-}, 0);
-const efficiency = schedule.total > 0 ? (totalBondUps / schedule.total) : 0;
-
-html += `
-<details class="card member-card">
-<summary class="member-summary">
-<span class="m-name">${escapeHtml(m)} <span class="m-eff">効率 ${efficiency.toFixed(1)}</span></span>
-<span class="m-cost">${schedule.total}<span>回</span></span>
-</summary>
-<div style="padding-bottom:10px;">${roundsHtml}</div>
-</details>
-`;
-});
-
-resSlot.innerHTML = html;
+  resSlot.innerHTML = html;
 }
 
 (async function init(){
-await loadState();
-renderNewRows();
-renderExistRows();
-renderBreakpoints();
-renderParallelButtons();
-attachListeners();
-compute();
+  await loadState();
+  renderNewRows();
+  renderExistRows();
+  renderBreakpoints();
+  renderParallelButtons();
+  attachListeners();
+  compute();
 })();
 </script>
 </body>
