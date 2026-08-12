@@ -201,6 +201,25 @@
   .acct-id-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease;}
   .acct.open .acct-id-wrap{grid-template-rows:1fr;}
   .acct-id-inner{overflow:hidden;}
+
+  .memo-btn{
+    flex-shrink:0;display:flex;align-items:center;gap:4px;
+    background:var(--bg-1);border:1px solid var(--line);border-radius:20px;
+    padding:5px 10px;font-size:11px;font-weight:700;color:var(--muted);
+    font-family:'Zen Maru Gothic',sans-serif;cursor:pointer;transition:background .15s,color .15s;
+  }
+  .memo-btn:hover{background:rgba(255,125,31,.1);color:var(--text);}
+  .memo-btn.has-note{color:var(--gold);border-color:rgba(255,213,74,.4);}
+  .person.memo-open .memo-btn{background:rgba(255,125,31,.16);color:var(--text);}
+  .memo-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease;}
+  .person.memo-open .memo-wrap{grid-template-rows:1fr;}
+  .memo-inner{overflow:hidden;}
+  .memo-body{
+    padding:10px 14px;font-size:12.5px;line-height:1.6;color:var(--text);
+    background:rgba(255,213,74,.06);border-bottom:1px solid var(--line);
+    white-space:pre-wrap;
+  }
+  .memo-body.empty{color:var(--muted);}
   .acct-id-row{
     display:flex;align-items:center;gap:8px;margin-top:10px;
     background:var(--bg-1);border:1px solid var(--line);border-radius:9px;padding:9px 10px;
@@ -274,7 +293,7 @@
 <script>
 /* ============ データはここを書き換えて差し替え ============ */
 const MEMBERS = [
-  { lineName: "藤岡", accounts: [
+  { lineName: "藤岡", note: "ワンパン周回のみ", accounts: [
     { accountName: "私はルリ",       rank: "2500", gameId: "131291013582" },
     { accountName: "私はルリ②",     rank: "2005", gameId: "168606364132" },
     { accountName: "私はルリ③",     rank: "1293", gameId: "601468556" },
@@ -333,9 +352,6 @@ const MEMBERS = [
   ]},
   { lineName: "なめ猫", accounts: [
     { accountName: "なめ猫", rank: "1129", gameId: "087598666" },
-  ]},
-  { lineName: "まる。", accounts: [
-    { accountName: "まる。", rank: "2500", gameId: "691792030" },
   ]},
   { lineName: "ヒロ", accounts: [
     { accountName: "HIRO", rank: "51", gameId: "191292994635" },
@@ -437,12 +453,16 @@ function render(){
   resultHint.textContent = q ? `${list.length}件ヒット` : `全${MEMBERS.length}件`;
 
   resultsEl.innerHTML = list.map((person, pi) => `
-    <div class="person">
+    <div class="person" data-pidx="${pi}">
       <div class="person-head">
         <div class="avatar">${escapeHtml(initial(person.lineName))}</div>
         <div class="person-name">${escapeHtml(person.lineName)}</div>
         <div class="acct-count">${person.accounts.length}垢</div>
+        <button class="memo-btn${person.note?' has-note':''}" data-memo-toggle="${pi}">募集条件</button>
       </div>
+      <div class="memo-wrap"><div class="memo-inner">
+        <div class="memo-body${person.note?'':' empty'}">${person.note ? escapeHtml(person.note) : 'メモは登録されていません。'}</div>
+      </div></div>
       <div class="accounts">
         ${person.accounts.map((a, ai) => `
           <div class="acct${a.closed?' closed':''}" data-idx="${pi}_${ai}" data-closed="${a.closed?'1':'0'}">
@@ -471,6 +491,13 @@ function render(){
 }
 
 resultsEl.addEventListener('click', async (e)=>{
+  const memoBtn = e.target.closest('.memo-btn');
+  if(memoBtn){
+    e.stopPropagation();
+    const personEl = memoBtn.closest('.person');
+    personEl.classList.toggle('memo-open');
+    return;
+  }
   const copyBtn = e.target.closest('.copy-btn');
   if(copyBtn){
     e.stopPropagation();
