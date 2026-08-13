@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>絆グループ アカウント検索</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -161,11 +162,68 @@
     background:radial-gradient(circle at 32% 28%, #ffe9b0, var(--gold) 35%, var(--orange) 75%, var(--orange-dark) 100%);
     border:2px solid rgba(255,255,255,.35);
   }
-  .person-name{font-weight:700;font-size:15px;flex:1;}
+  .person-name-wrap{flex:1;cursor:pointer;min-width:0;}
+  .person-name{font-weight:700;font-size:15px;}
+  .person-name .tap-hint{margin-top:1px;}
+  .person-badges{display:flex;flex-direction:column;align-items:flex-end;gap:6px;cursor:pointer;flex-shrink:0;}
+  .badge-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;}
   .acct-count{
     font-size:10.5px;color:var(--muted);font-family:'JetBrains Mono',monospace;
     background:var(--bg-1);border:1px solid var(--line);border-radius:20px;padding:3px 9px;
   }
+  .time-badge{
+    font-size:10.5px;color:#8be89a;font-weight:700;
+    background:rgba(139,232,154,.1);border:1px solid rgba(139,232,154,.4);
+    border-radius:20px;padding:3px 9px;display:flex;align-items:center;gap:3px;
+  }
+
+  .filter-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:0;margin:12px 0;overflow:hidden;
+  }
+  .filter-header{
+    width:100%;display:flex;align-items:center;justify-content:space-between;
+    color:var(--text);font-weight:700;font-size:13.5px;
+    font-family:'Zen Maru Gothic',sans-serif;padding:14px 16px;
+  }
+  .switch{position:relative;display:inline-block;width:44px;height:26px;flex-shrink:0;}
+  .switch input{opacity:0;width:0;height:0;position:absolute;}
+  .switch-track{
+    position:absolute;inset:0;background:var(--bg-1);border:1px solid var(--line);
+    border-radius:20px;transition:background .2s,border-color .2s;cursor:pointer;
+  }
+  .switch-thumb{
+    position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+    background:var(--muted);transition:transform .2s,background .2s;
+  }
+  .switch input:checked + .switch-track{background:linear-gradient(120deg,var(--orange),var(--orange-2));border-color:var(--orange);}
+  .switch input:checked + .switch-track .switch-thumb{transform:translateX(18px);background:#fff;}
+  .filter-body-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease;}
+  .filter-body-wrap.open{grid-template-rows:1fr;}
+  .filter-body-inner{overflow:hidden;}
+  .filter-body-inner > *{padding-left:16px;padding-right:16px;}
+  .filter-body-inner > .filter-group:first-child{padding-top:2px;}
+  .filter-body-inner > .filter-reset{padding-bottom:14px;padding-top:6px;}
+  .filter-group{margin-bottom:8px;}
+  .filter-group:last-child{margin-bottom:0;}
+  .filter-label{font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px;}
+  .filter-radio{display:flex;gap:6px;}
+  .filter-radio.wrap4{flex-wrap:wrap;}
+  .filter-radio.wrap4 .radio-btn{flex:1 1 calc(50% - 3px);}
+  .radio-btn{
+    flex:1;border:1px solid var(--line);background:var(--bg-1);color:var(--muted);
+    font-size:12px;font-weight:700;padding:7px 8px;border-radius:10px;cursor:pointer;
+    font-family:'Zen Maru Gothic',sans-serif;transition:background .15s,color .15s,border-color .15s;
+    line-height:1.2;
+  }
+  .radio-btn.active{background:linear-gradient(120deg,var(--orange),var(--orange-2));color:#1a0e05;border-color:var(--orange);}
+  .filter-reset{
+    font-size:11px;color:var(--muted);background:none;border:none;
+    text-decoration:underline;cursor:pointer;margin-top:6px;padding:0;
+  }
+  .accounts-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease;}
+  .person.accounts-open .accounts-wrap{grid-template-rows:1fr;}
+  .accounts-inner{overflow:hidden;}
   .accounts{display:flex;flex-direction:column;}
   .acct{padding:12px 14px;border-top:1px dashed var(--line-soft);cursor:pointer;transition:background .15s;}
   .acct:first-child{border-top:none;}
@@ -251,6 +309,13 @@
   .footer-note{
     text-align:center;color:var(--muted);font-size:10.5px;margin-top:26px;line-height:1.7;
   }
+
+  html{color-scheme:dark;}
+  input,textarea,button,select{
+    color:inherit;
+    -webkit-text-fill-color:currentColor;
+  }
+
 </style>
 </head>
 <body>
@@ -277,6 +342,54 @@
       <div class="hint" id="resultHint"></div>
     </div>
 
+    <div class="filter-card">
+      <div class="filter-header">
+        <span>あなたの情報</span>
+        <label class="switch">
+          <input type="checkbox" id="filterMasterSwitch">
+          <span class="switch-track"><span class="switch-thumb"></span></span>
+        </label>
+      </div>
+      <div class="filter-body-wrap" id="filterBodyWrap"><div class="filter-body-inner">
+      <div class="filter-group">
+        <div class="filter-label">プレイする神殿クエスト</div>
+        <div class="filter-radio" data-filter-group="temple">
+          <button class="radio-btn" data-value="闇時2">闇時2</button>
+          <button class="radio-btn" data-value="その他">その他</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">あなたのアカウント数</div>
+        <div class="filter-radio" data-filter-group="acct">
+          <button class="radio-btn" data-value="1垢">1垢</button>
+          <button class="radio-btn" data-value="複数垢">複数垢</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">あなたの番号</div>
+        <div class="filter-radio" data-filter-group="number">
+          <button class="radio-btn" data-value="番号無し">番号無し</button>
+          <button class="radio-btn" data-value="777">777</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">厳選キャラを使用しますか?</div>
+        <div class="filter-radio" data-filter-group="senkou">
+          <button class="radio-btn" data-value="使用する">使用する</button>
+          <button class="radio-btn" data-value="使用しない">使用しない</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">ワンパンキャラ所持者ですか?</div>
+        <div class="filter-radio" data-filter-group="onepunch">
+          <button class="radio-btn" data-value="はい">はい</button>
+          <button class="radio-btn" data-value="いいえ">いいえ</button>
+        </div>
+      </div>
+      <button class="filter-reset" id="filterReset">条件をリセット</button>
+      </div></div>
+    </div>
+
     <div class="section-label">ランク一覧</div>
     <div class="table-card">
       <div id="tableWrap"></div>
@@ -293,7 +406,7 @@
 <script>
 /* ============ データはここを書き換えて差し替え ============ */
 const MEMBERS = [
-  { lineName: "藤岡", note: "ワンパン周回のみ", accounts: [
+  { lineName: "藤岡", note: "神殿:なんでもOK\nランク差:175以上\n垢:1垢でもOK\n番号:番号無しでもOK\n厳選キャラ:NG\nワンパンキャラのみ", accounts: [
     { accountName: "私はルリ",       rank: "2500", gameId: "131291013582" },
     { accountName: "私はルリ②",     rank: "2005", gameId: "168606364132" },
     { accountName: "私はルリ③",     rank: "1293", gameId: "601468556" },
@@ -328,11 +441,11 @@ const MEMBERS = [
   { lineName: "よし", accounts: [
     { accountName: "正式トン社長", rank: "1502", gameId: "695751122" },
   ]},
-  { lineName: "SUGURU", accounts: [
+  { lineName: "SUGURU", note: "神殿:なんでもOK\nランク差:325以上\n垢:1垢でもOK\n番号:番号無しでもOK\n厳選キャラ:OK\nワンパンキャラのみ\n【追記】自分は番号無しです。", accounts: [
     { accountName: "SUGURU①", rank: "1897", gameId: "845504854" },
     { accountName: "SUGURU②", rank: "139",  gameId: "163414791951" },
   ]},
-  { lineName: "YUUKI", accounts: [
+  { lineName: "YUUKI", note: "神殿:なんでもOK\nランク差:325以上\n垢:1垢でもOK\n番号:777のみ\n厳選キャラ:OK\nワンパンキャラなくても大丈夫\n【追記】1垢以上325差あれば他の垢は複数の日にわけて貯める等でも大丈夫です\nこちら闇時2用喜多ちゃんのみ出せます\n基本的に21~24時ごろに貯められる方いましたらお願いいたします", accounts: [
     { accountName: "Y・I", rank: "690", gameId: "722096972443" },
   ]},
   { lineName: "あきひろ", accounts: [
@@ -352,21 +465,23 @@ const MEMBERS = [
   ]},
   { lineName: "なめ猫", accounts: [
     { accountName: "なめ猫", rank: "1129", gameId: "087598666" },
+    { accountName: "なめ猫①", rank: "537", gameId: "087013943" },
+    { accountName: "なめ猫＊まりこ", rank: "474", gameId: "856640562515" },
   ]},
   { lineName: "ヒロ", accounts: [
-    { accountName: "HIRO", rank: "51", gameId: "191292994635" },
+    { accountName: "HIRO", rank: "210", gameId: "191292994635" },
   ]},
-  { lineName: "ゆりな", accounts: [
+  { lineName: "ゆりな", note: "神殿:なんでもOK\nランク差:175以上\n垢:1垢でもOK\n番号:番号無しでもOK\n厳選キャラ:NG\nワンパンキャラのみ", accounts: [
     { accountName: "トンちゃん@ゆりなガチャ禁", rank: "596", gameId: "87457461458" },
     { accountName: "トンちゃん@ゆりな", rank: "709", gameId: "256947852" },
     { accountName: "伽羅栖ʚ✞ɞヤマピー", rank: "2041", gameId: "910812272" },
     { accountName: "伽羅栖@ヤマピー3", rank: "815", gameId: "660320951451" },
   ]},
-  { lineName: "⋈フレドラ・クリア♡", accounts: [
+  { lineName: "⋈フレドラ・クリア♡", note: "神殿:闇時2のみ\nランク差:気にしない\n垢:1垢でもOK\n番号:777のみ\n厳選キャラ:OK\nワンパンキャラなくても大丈夫\n【追記】ワンパンキャラ出します", accounts: [
     { accountName: "NT・R18 メス〇キ", rank: "843", gameId: "503625563265" },
     { accountName: "T・SF メス〇キママ", rank: "507", gameId: "599171176743" },
   ]},
-  { lineName: "RYO", accounts: [
+  { lineName: "RYO", note: "神殿:闇時2のみ\nランク差:気にしない\n垢:1垢でもOK\n番号:番号無しでもOK\n厳選キャラ:OK\nワンパンキャラなくても大丈夫\n【追記】フレ垢指定NG\n7垢All2~4神殿、5神殿以上はチリツモ", accounts: [
     { accountName: "らすかる",  rank: "1623", gameId: "982565334" },
     { accountName: "らすかる2", rank: "1336", gameId: "278982153259" },
     { accountName: "らすかる3", rank: "1172", gameId: "195959289020" },
@@ -375,7 +490,10 @@ const MEMBERS = [
     { accountName: "らすかる6", rank: "654",  gameId: "526778761709" },
     { accountName: "らすかる7", rank: "44",   gameId: "74061724801" },
   ]},
-  { lineName: "くりりん", accounts: [
+  { lineName: "*•𝓚𝓐𝓡𝓘𝓝•*", note: "神殿:闇時2のみ\nランク差:気にしない\n垢:1垢でもOK\n番号:777のみ\n厳選キャラ:NG\nワンパンキャラなくても大丈夫\n【追記】夜勤勤務で週2回とかの時もあります。", accounts: [
+    { accountName: "karin", rank: "594", gameId: "319636141297" },
+  ]},
+  { lineName: "くりりん", note: "神殿:闇時2のみ\nランク差:気にしない\n垢:1垢でもOK\n番号:777のみ\n厳選キャラ:OK\nワンパンキャラなくても大丈夫\n【追記】8垢ALL2神殿ずつでお願いします🤲", accounts: [
     { accountName: "くりお",             rank: "2500", gameId: "729486775" },
     { accountName: "★くりお★Ⅱ2ndⅡ",  rank: "2007", gameId: "501157016272" },
     { accountName: "@くりお@Ⅱ3rdⅡ",   rank: "2008", gameId: "955155833104" },
@@ -405,10 +523,57 @@ function escapeHtml(s){
 }
 function initial(name){ return (name||'?').trim().charAt(0); }
 
+const activeFilters = {
+  temple: '闇時2',
+  acct: '1垢',
+  number: '番号無し',
+  senkou: '使用しない',
+  onepunch: 'はい'
+};
+let filterEnabled = false;
+
+function categoryMatch(note, group){
+  const selected = activeFilters[group];
+  switch(group){
+    case 'temple':
+      // 闇時2を選んだら全員条件クリア。その他を選ぶとなんでもOKの人のみ
+      if(selected === '闇時2') return true;
+      return note.includes('神殿:なんでもOK');
+    case 'acct':
+      // 複数垢を選んだら全員クリア。1垢を選ぶと「1垢でもOK」の人のみ
+      if(selected === '複数垢') return true;
+      return note.includes('垢:1垢でもOK');
+    case 'number':
+      // 777を選ぶとどちらでも該当。番号無しを選ぶと「番号無しでもOK」の人のみ(777のみは除外)
+      if(selected === '777') return true;
+      return note.includes('番号:番号無しでもOK');
+    case 'senkou':
+      // 使用しないを選ぶとどちらでも該当。使用するを選ぶとOKの人のみ(NGは除外)
+      if(selected === '使用しない') return true;
+      return note.includes('厳選キャラ:OK');
+    case 'onepunch':
+      // はいを選ぶとどちらでも該当。いいえを選ぶと「ワンパンキャラのみ」希望の人は除外
+      if(selected === 'はい') return true;
+      return !note.includes('ワンパンキャラのみ');
+    default:
+      return true;
+  }
+}
+
+const DEFAULT_NOTE = '神殿:なんでもOK\n垢:1垢でもOK\n番号:番号無しでもOK\n厳選キャラ:OK\nワンパンキャラなくても大丈夫';
+
+function matchesFilters(person){
+  if(!filterEnabled) return true;
+  const note = person.note || DEFAULT_NOTE;
+  return Object.keys(activeFilters).every(group => categoryMatch(note, group));
+}
+
 function getFiltered(){
   const q = searchInput.value.trim().toLowerCase();
-  if(!q) return MEMBERS;
-  return MEMBERS.filter(m => m.lineName.toLowerCase().includes(q));
+  let list = MEMBERS;
+  if(q) list = list.filter(m => m.lineName.toLowerCase().includes(q));
+  list = list.filter(matchesFilters);
+  return list;
 }
 
 function renderTable(list){
@@ -440,29 +605,53 @@ function render(){
   renderTable(list);
 
   const q = searchInput.value.trim();
+  const filtersActive = filterEnabled;
+
   if(MEMBERS.length === 0){
     resultsEl.innerHTML = '<div class="empty">まだ登録がありません。</div>';
     resultHint.textContent = '';
     return;
   }
-  if(q && list.length === 0){
-    resultsEl.innerHTML = '<div class="empty">「'+escapeHtml(q)+'」に一致するLINE名が見つかりません。</div>';
+  if(list.length === 0){
+    const msg = q
+      ? '「'+escapeHtml(q)+'」に一致するLINE名が見つかりません。'
+      : '条件に一致するメンバーが見つかりません。';
+    resultsEl.innerHTML = '<div class="empty">'+msg+'</div>';
     resultHint.textContent = '';
     return;
   }
-  resultHint.textContent = q ? `${list.length}件ヒット` : `全${MEMBERS.length}件`;
+  resultHint.textContent = (q || filtersActive) ? `${list.length}件ヒット` : `全${MEMBERS.length}件`;
 
-  resultsEl.innerHTML = list.map((person, pi) => `
+function extractRankDiff(note){
+  if(!note) return null;
+  const m = note.match(/ランク差[:：]?\s*(\d+)\s*(?:差)?以上/);
+  return m ? m[1] : null;
+}
+
+resultsEl.innerHTML = list.map((person, pi) => {
+    const rankDiff = extractRankDiff(person.note);
+    return `
     <div class="person" data-pidx="${pi}">
       <div class="person-head">
         <div class="avatar">${escapeHtml(initial(person.lineName))}</div>
-        <div class="person-name">${escapeHtml(person.lineName)}</div>
-        <div class="acct-count">${person.accounts.length}垢</div>
-        <button class="memo-btn${person.note?' has-note':''}" data-memo-toggle="${pi}">募集条件</button>
+        <div class="person-name-wrap" data-acct-toggle="${pi}">
+          <div class="person-name">${escapeHtml(person.lineName)}</div>
+          <div class="tap-hint">タップして表示</div>
+        </div>
+        <div class="person-badges" data-memo-toggle="${pi}">
+          <div class="badge-row">
+            <div class="acct-count">${person.accounts.length}垢</div>
+            ${rankDiff ? `<div class="time-badge rankdiff-badge">ランク差${escapeHtml(rankDiff)}以上</div>` : ''}
+          </div>
+          <div class="badge-row">
+            <button class="memo-btn${person.note?' has-note':''}">募集条件${(person.note && person.note.includes('【追記】'))?'(追記あり)':''}</button>
+          </div>
+        </div>
       </div>
       <div class="memo-wrap"><div class="memo-inner">
         <div class="memo-body${person.note?'':' empty'}">${person.note ? escapeHtml(person.note) : 'メモは登録されていません。'}</div>
       </div></div>
+      <div class="accounts-wrap"><div class="accounts-inner">
       <div class="accounts">
         ${person.accounts.map((a, ai) => `
           <div class="acct${a.closed?' closed':''}" data-idx="${pi}_${ai}" data-closed="${a.closed?'1':'0'}">
@@ -486,16 +675,25 @@ function render(){
           </div>
         `).join('')}
       </div>
+      </div></div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 resultsEl.addEventListener('click', async (e)=>{
-  const memoBtn = e.target.closest('.memo-btn');
-  if(memoBtn){
+  const badgesWrap = e.target.closest('.person-badges');
+  if(badgesWrap){
     e.stopPropagation();
-    const personEl = memoBtn.closest('.person');
+    const personEl = badgesWrap.closest('.person');
     personEl.classList.toggle('memo-open');
+    return;
+  }
+  const nameWrap = e.target.closest('.person-name-wrap');
+  if(nameWrap){
+    e.stopPropagation();
+    const personEl = nameWrap.closest('.person');
+    personEl.classList.toggle('accounts-open');
     return;
   }
   const copyBtn = e.target.closest('.copy-btn');
@@ -519,8 +717,49 @@ resultsEl.addEventListener('click', async (e)=>{
 
 searchInput.addEventListener('input', render);
 
+// ==== 条件フィルター(2択のラジオ式) ====
+function applyRadioUI(group){
+  const wrap = document.querySelector(`.filter-radio[data-filter-group="${group}"]`);
+  wrap.querySelectorAll('.radio-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.value === activeFilters[group]);
+  });
+}
+
+document.querySelectorAll('.filter-radio').forEach(wrap => {
+  const group = wrap.dataset.filterGroup;
+  wrap.addEventListener('click', e => {
+    const btn = e.target.closest('.radio-btn');
+    if(!btn) return;
+    activeFilters[group] = btn.dataset.value;
+    applyRadioUI(group);
+    render();
+  });
+  applyRadioUI(group);
+});
+
+document.getElementById('filterReset').addEventListener('click', () => {
+  activeFilters.temple = '闇時2';
+  activeFilters.acct = '1垢';
+  activeFilters.number = '番号無し';
+  activeFilters.senkou = '使用しない';
+  activeFilters.onepunch = 'はい';
+  Object.keys(activeFilters).forEach(applyRadioUI);
+  render();
+});
+
+// ==== あなたの情報:ON/OFFスイッチ(OFFなら全件表示・折りたたむ) ====
+const filterMasterSwitch = document.getElementById('filterMasterSwitch');
+const filterBodyWrap = document.getElementById('filterBodyWrap');
+filterMasterSwitch.addEventListener('change', () => {
+  filterEnabled = filterMasterSwitch.checked;
+  filterBodyWrap.classList.toggle('open', filterEnabled);
+  render();
+});
+filterBodyWrap.classList.toggle('open', filterEnabled);
+
 hudCount.textContent = `${MEMBERS.length}人登録`;
 render();
 </script>
+
 </body>
 </html>
